@@ -351,14 +351,8 @@ namespace OrchardCore.Queries.Sql
                     break;
                 case "inExpr":
                     EvaluateExpression(parseTreeNode.ChildNodes[0]);
-                    _builder.Append(" ");
-                    if (parseTreeNode.ChildNodes[1].ChildNodes.Count > 0)
-                    {
-                        _builder.Append("NOT ");
-                    }
-                    _builder.Append("IN (");
-                    EvaluateInArgs(parseTreeNode.ChildNodes[3]);
-                    _builder.Append(")");
+                    var isNot = parseTreeNode.ChildNodes[1].ChildNodes.Count > 0;
+                    EvaluateInArgs(parseTreeNode.ChildNodes[3], isNot);
                     break;
                 // Term and Tuple are transient, to they appear directly
                 case "Id":
@@ -388,37 +382,8 @@ namespace OrchardCore.Queries.Sql
                     break;
                 case "parameter":
                     var name = parseTreeNode.ChildNodes[1].ChildNodes[0].Token.ValueString;
-
                     _builder.Append("@" + name);
-
-                    if (_parameters != null && !_parameters.ContainsKey(name))
-                    {
-                        // If a parameter is not set and there is no default value, report it
-                        if (parseTreeNode.ChildNodes.Count < 3)
-                        {
-                            throw new SqlParserException("Missing parameters: " + name);
-                        }
-                        else
-                        {
-                            if (parseTreeNode.ChildNodes[3].Token != null)
-                            {
-                                _parameters[name] = parseTreeNode.ChildNodes[3].Token.Value;
-                            }
-                            else
-                            {
-                                // example: true
-                                if (parseTreeNode.ChildNodes[3].ChildNodes[0].Token != null)
-                                {
-                                    _parameters[name] = parseTreeNode.ChildNodes[3].ChildNodes[0].Token.Value;
-                                }
-                                else
-                                {
-                                    throw new SqlParserException("Unsupported syntax for parameter: " + name);
-                                }
-                            }
-                        }
-                    }
-
+                    CheckParameter(parseTreeNode);
                     break;
                 case "*":
                     _builder.Append("*");
@@ -426,17 +391,82 @@ namespace OrchardCore.Queries.Sql
             }
         }
 
-        private void EvaluateInArgs(ParseTreeNode inArgs)
+        private void CheckParameter(ParseTreeNode parseTreeNode)
+        {
+            var name = parseTreeNode.ChildNodes[1].ChildNodes[0].Token.ValueString;
+            if (_parameters != null && !_parameters.ContainsKey(name))
+            {
+                // If a parameter is not set and there is no default value, report it
+                if (parseTreeNode.ChildNodes.Count < 3)
+                {
+                    throw new SqlParserException("Missing parameters: " + name);
+                }
+                else
+                {
+                    if (parseTreeNode.ChildNodes[3].Token != null)
+                    {
+                        _parameters[name] = parseTreeNode.ChildNodes[3].Token.Value;
+                    }
+                    else
+                    {
+                        // example: true
+                        if (parseTreeNode.ChildNodes[3].ChildNodes[0].Token != null)
+                        {
+                            _parameters[name] = parseTreeNode.ChildNodes[3].ChildNodes[0].Token.Value;
+                        }
+                        else
+                        {
+                            throw new SqlParserException("Unsupported syntax for parameter: " + name);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void EvaluateInArgs(ParseTreeNode inArgs, bool isNot)
         {
             if (inArgs.ChildNodes[0].Term.Name == "selectStatement")
             {
                 // selectStatement
+                _builder.Append(" ");
+                _builder.Append("IN ");
+                if (isNot) {
+                    _builder.Append("NOT ");
+                }
+                _builder.Append("(");
                 _builder.Append(EvaluateSelectStatement(inArgs.ChildNodes[0]));
+                _builder.Append(")");
             }
             else
             {
-                // expressionList
-                EvaluateExpressionList(inArgs.ChildNodes[0]);
+                if (inArgs.ChildNodes[0].ChildNodes.Count == 1 && inArgs.ChildNodes[0].ChildNodes[0].Term.Name == "parameter")
+                {
+                    // single parameter
+                    var parameter = inArgs.ChildNodes[0].ChildNodes[0];
+                    var name = parameter.ChildNodes[1].ChildNodes[0].Token.ValueString;
+                    CheckParameter(parameter);
+                    if (isNot)
+                    {
+                        _builder.Append(_dialect.NotInOperator("@" + name));
+                    }
+                    else
+                    {
+                        _builder.Append(_dialect.InOperator("@" + name));
+                    }
+                }
+                else
+                {
+                    // expressionList
+                    _builder.Append(" ");
+                    _builder.Append("IN ");
+                    if (isNot)
+                    {
+                        _builder.Append("NOT ");
+                    }
+                    _builder.Append("(");
+                    EvaluateExpressionList(inArgs.ChildNodes[0]);
+                    _builder.Append(")");
+                }
             }
         }
 
