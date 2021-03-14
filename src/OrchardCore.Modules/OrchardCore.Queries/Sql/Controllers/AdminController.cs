@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OrchardCore.Liquid;
 using OrchardCore.Modules;
+using OrchardCore.Queries.Converters;
 using OrchardCore.Queries.Sql.ViewModels;
 using YesSql;
 
@@ -77,26 +78,7 @@ namespace OrchardCore.Queries.Sql.Controllers
             var connection = _store.Configuration.ConnectionFactory.CreateConnection();
             var dialect = _store.Configuration.SqlDialect;
 
-            var parameters = JsonConvert.DeserializeObject<Dictionary<string, object>>(model.Parameters);
-            foreach (var key in parameters.Keys)
-            {
-                var value = parameters[key] as JToken;
-                if (value.Type == JTokenType.Array)
-                {
-                    var firstItemType = value.First.Type;
-                    switch(firstItemType)
-                    {
-                        // for Floats and Integers we will use Float array
-                        case JTokenType.Float:
-                        case JTokenType.Integer:
-                            parameters[key] = value.ToObject<float[]>();
-                            break;
-                        case JTokenType.String:
-                            parameters[key] = value.ToObject<string[]>();
-                            break;
-                    };
-                }
-            }
+            var parameters = JsonConvert.DeserializeObject<Dictionary<string, object>>(model.Parameters, new SqlParameterConverter());
 
             var tokenizedQuery = await _liquidTemplateManager.RenderStringAsync(model.DecodedQuery, NullEncoder.Default, parameters.Select(x => new KeyValuePair<string, FluidValue>(x.Key, FluidValue.Create(x.Value, _templateOptions))));
 
