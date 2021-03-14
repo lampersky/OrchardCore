@@ -429,10 +429,10 @@ namespace OrchardCore.Queries.Sql
             {
                 // selectStatement
                 _builder.Append(" ");
-                _builder.Append("IN ");
                 if (isNot) {
                     _builder.Append("NOT ");
                 }
+                _builder.Append("IN ");
                 _builder.Append("(");
                 _builder.Append(EvaluateSelectStatement(inArgs.ChildNodes[0]));
                 _builder.Append(")");
@@ -458,11 +458,11 @@ namespace OrchardCore.Queries.Sql
                 {
                     // expressionList
                     _builder.Append(" ");
-                    _builder.Append("IN ");
                     if (isNot)
                     {
                         _builder.Append("NOT ");
                     }
+                    _builder.Append("IN ");
                     _builder.Append("(");
                     EvaluateExpressionList(inArgs.ChildNodes[0]);
                     _builder.Append(")");

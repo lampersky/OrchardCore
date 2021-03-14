@@ -84,13 +84,16 @@ namespace OrchardCore.Queries.Sql.Controllers
                 if (value.Type == JTokenType.Array)
                 {
                     var firstItemType = value.First.Type;
-                    parameters[key] = firstItemType switch
+                    switch(firstItemType)
                     {
                         // for Floats and Integers we will use Float array
-                        JTokenType.Float => value.ToObject<float[]>(),
-                        JTokenType.Integer => value.ToObject<float[]>(),
-                        JTokenType.String => value.ToObject<string[]>(),
-                        _ => parameters[key],
+                        case JTokenType.Float:
+                        case JTokenType.Integer:
+                            parameters[key] = value.ToObject<float[]>();
+                            break;
+                        case JTokenType.String:
+                            parameters[key] = value.ToObject<string[]>();
+                            break;
                     };
                 }
             }

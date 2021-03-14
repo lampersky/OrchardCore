@@ -93,6 +93,8 @@ namespace OrchardCore.Tests.OrchardCore.Queries
         [InlineData("select a where a = @b", "SELECT [a] WHERE [a] = @b;")]
         [InlineData("select a where a = @b limit @limit", "SELECT TOP (@limit) [a] WHERE [a] = @b;")]
         [InlineData("select a where a = @b limit @limit:10", "SELECT TOP (@limit) [a] WHERE [a] = @b;")]
+        [InlineData("select a from b where a in (@ids)", "SELECT [a] FROM [tp_b] WHERE [a] IN @ids;")]
+        [InlineData("select a from b where a not in (@ids)", "SELECT [a] FROM [tp_b] WHERE [a] NOT IN @ids;")]
         public void ShouldParseParameters(string sql, string expectedSql)
         {
             var result = SqlParser.TryParse(sql, _defaultDialect, _defaultTablePrefix, null, out var rawQuery, out var messages);
