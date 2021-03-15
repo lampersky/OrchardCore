@@ -77,37 +77,43 @@ namespace OrchardCore.Queries.Sql.Controllers
 
             var connection = _store.Configuration.ConnectionFactory.CreateConnection();
             var dialect = _store.Configuration.SqlDialect;
-
-            var parameters = JsonConvert.DeserializeObject<Dictionary<string, object>>(model.Parameters, new SqlParameterConverter());
-
-            var tokenizedQuery = await _liquidTemplateManager.RenderStringAsync(model.DecodedQuery, NullEncoder.Default, parameters.Select(x => new KeyValuePair<string, FluidValue>(x.Key, FluidValue.Create(x.Value, _templateOptions))));
-
             model.FactoryName = _store.Configuration.ConnectionFactory.GetType().FullName;
 
-            if (SqlParser.TryParse(tokenizedQuery, dialect, _store.Configuration.TablePrefix, parameters, out var rawQuery, out var messages))
+            try
             {
-                model.RawSql = rawQuery;
-                model.Parameters = JsonConvert.SerializeObject(parameters, Formatting.Indented);
+                var parameters = JsonConvert.DeserializeObject<Dictionary<string, object>>(model.Parameters, new SqlParameterConverter());
 
-                try
+                var tokenizedQuery = await _liquidTemplateManager.RenderStringAsync(model.DecodedQuery, NullEncoder.Default, parameters.Select(x => new KeyValuePair<string, FluidValue>(x.Key, FluidValue.Create(x.Value, _templateOptions))));
+
+                if (SqlParser.TryParse(tokenizedQuery, dialect, _store.Configuration.TablePrefix, parameters, out var rawQuery, out var messages))
                 {
-                    using (connection)
+                    model.RawSql = rawQuery;
+                    model.Parameters = JsonConvert.SerializeObject(parameters, Formatting.Indented);
+
+                    try
                     {
-                        await connection.OpenAsync();
-                        model.Documents = await connection.QueryAsync(rawQuery, parameters);
+                        using (connection)
+                        {
+                            await connection.OpenAsync();
+                            model.Documents = await connection.QueryAsync(rawQuery, parameters);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        ModelState.AddModelError("", S["An error occurred while executing the SQL query: {0}", e.Message]);
                     }
                 }
-                catch (Exception e)
+                else
                 {
-                    ModelState.AddModelError("", S["An error occurred while executing the SQL query: {0}", e.Message]);
+                    foreach (var message in messages)
+                    {
+                        ModelState.AddModelError("", message);
+                    }
                 }
             }
-            else
+            catch (ArgumentException ae)
             {
-                foreach (var message in messages)
-                {
-                    ModelState.AddModelError("", message);
-                }
+                ModelState.AddModelError("", S["Invalid SQL parameter: {0}", ae.Message]);
             }
 
             model.Elapsed = stopwatch.Elapsed;

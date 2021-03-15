@@ -14,32 +14,30 @@ namespace OrchardCore.Queries.Converters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var token = JToken.Load(reader);
-            if (token.Type == JTokenType.Array)
+            if (token.Type != JTokenType.Array || token.First == null)
             {
-                if (token.First != null)
-                {
-                    // result type based on first item type
-                    switch (token.First.Type)
-                    {
-                        // for Floats and Integers we will use Float array, in case of mixed types array
-                        case JTokenType.Float:
-                        case JTokenType.Integer:
-                            try
-                            {
-                                return token.ToObject<float[]>();
-                            }
-                            catch (Exception)
-                            {
-                                // in case of mixed types
-                                return token.ToObject<object[]>();
-                            }
-                        case JTokenType.String:
-                            return token.ToObject<string[]>();
-                    };
-                }
-                return token.ToObject<object[]>();
+                return token.ToObject<object>();
             }
-            return token;
+
+            // array type based on first item type
+            var arrayType = token.First.Type switch
+            {
+                // for Floats and Integers we will use Float array, in case of mixed types array
+                JTokenType.Float => typeof(float[]),
+                JTokenType.Integer => typeof(float[]),
+                JTokenType.Boolean => typeof(bool[]),
+                JTokenType.String => typeof(string[]),
+                _ => throw new ArgumentException("Array can only contains types like: int, float, string or bool.")
+            };
+
+            try
+            {
+                return token.ToObject(arrayType);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Array can only contains same type elements.");
+            }
         }
 
         public override bool CanWrite => false;
