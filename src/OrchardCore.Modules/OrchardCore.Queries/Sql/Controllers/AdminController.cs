@@ -111,9 +111,9 @@ namespace OrchardCore.Queries.Sql.Controllers
                     }
                 }
             }
-            catch (ArgumentException ae)
+            catch (SqlParameterException e)
             {
-                ModelState.AddModelError("", S["Invalid SQL parameter: {0}", ae.Message]);
+                ModelState.AddModelError("", S["Invalid SQL parameter: {0}", e.Message]);
             }
 
             model.Elapsed = stopwatch.Elapsed;

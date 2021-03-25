@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OrchardCore.Queries.Sql;
 
 namespace OrchardCore.Queries.Converters
 {
@@ -14,20 +15,21 @@ namespace OrchardCore.Queries.Converters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var token = JToken.Load(reader);
-            if (token.Type != JTokenType.Array || token.First == null)
+            if (token.Type != JTokenType.Array)
             {
                 return token.ToObject<object>();
             }
 
             // array type based on first item type
-            var arrayType = token.First.Type switch
+            var arrayType = token.First?.Type switch
             {
                 // for Floats and Integers we will use Float array, in case of mixed types array
                 JTokenType.Float => typeof(float[]),
                 JTokenType.Integer => typeof(float[]),
                 JTokenType.Boolean => typeof(bool[]),
                 JTokenType.String => typeof(string[]),
-                _ => throw new ArgumentException("Array can only contains types like: int, float, string or bool.")
+                null => typeof(string[]),
+                _ => throw new SqlParameterException("Array can only contains types like: int, float, string or bool.")
             };
 
             try
@@ -36,7 +38,7 @@ namespace OrchardCore.Queries.Converters
             }
             catch (Exception)
             {
-                throw new ArgumentException("Array can only contains same type elements.");
+                throw new SqlParameterException("Array can only contains same type elements.");
             }
         }
 
