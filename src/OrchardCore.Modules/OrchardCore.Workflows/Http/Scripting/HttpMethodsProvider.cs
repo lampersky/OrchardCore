@@ -28,6 +28,8 @@ namespace OrchardCore.Workflows.Http.Scripting
         private readonly GlobalMethod _queryStringAsJsonMethod;
         private readonly GlobalMethod _requestFormAsJsonMethod;
         private readonly GlobalMethod _deserializeRequestDataMethod;
+        private readonly GlobalMethod _requestFileListMethod;
+        private readonly GlobalMethod _requestFileMethod;
 
         public HttpMethodsProvider(IHttpContextAccessor httpContextAccessor)
         {
@@ -221,6 +223,57 @@ namespace OrchardCore.Workflows.Http.Scripting
                     return result;
                 })
             };
+
+            _requestFileListMethod = new GlobalMethod
+            {
+                Name = "requestFileList",
+                Method = serviceProvider => (Func<List<object>>)(() =>
+                {
+                    var result = new List<object>();
+
+                    foreach (var file in httpContextAccessor.HttpContext.Request.Form.Files)
+                    {
+                        result.Add(new {
+                            file.FileName,
+                            file.Name,
+                            file.ContentType,
+                            file.Length
+                        });
+                    }
+
+                    return result;
+                })
+            };
+
+            _requestFileMethod = new GlobalMethod
+            {
+                Name = "requestFile",
+                Method = serviceProvider => (Func<string, string, byte[]>)((name, fileName) =>
+                {
+                    var files = httpContextAccessor.HttpContext.Request.Form.Files.GetFiles(name);
+                    if (files.Count == 0)
+                    {
+                        return null;
+                    }
+
+                    var file = files.Count > 1 ? files.Where(f => f.FileName == fileName).FirstOrDefault() : files[0];
+
+                    if (file == null) {
+                        return null;
+                    }
+
+                    var bufferSize = 4048;
+                    using var reader = new BinaryReader(file.OpenReadStream());
+                    using var ms = new MemoryStream();
+                    var buffer = new byte[bufferSize];
+                    int count;
+                    while ((count = reader.Read(buffer, 0, buffer.Length)) != 0)
+                    {
+                        ms.Write(buffer, 0, count);
+                    }
+                    return ms.ToArray();
+                })
+            };
         }
 
         private static bool isValidJSON(string json)
@@ -238,7 +291,7 @@ namespace OrchardCore.Workflows.Http.Scripting
 
         public IEnumerable<GlobalMethod> GetMethods()
         {
-            return new[] { _httpContextMethod, _queryStringMethod, _responseWriteMethod, _absoluteUrlMethod, _readBodyMethod, _requestFormMethod, _queryStringAsJsonMethod, _requestFormAsJsonMethod, _deserializeRequestDataMethod };
+            return new[] { _httpContextMethod, _queryStringMethod, _responseWriteMethod, _absoluteUrlMethod, _readBodyMethod, _requestFormMethod, _queryStringAsJsonMethod, _requestFormAsJsonMethod, _deserializeRequestDataMethod, _requestFileListMethod, _requestFileMethod };
         }
     }
 }
