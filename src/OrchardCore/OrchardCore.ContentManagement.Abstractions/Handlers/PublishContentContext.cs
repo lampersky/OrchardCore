@@ -1,6 +1,6 @@
 namespace OrchardCore.ContentManagement.Handlers
 {
-    public class PublishContentContext : ContentContextBase
+    public class PublishContentContext : ShortCircutedContentContext
     {
         public PublishContentContext(ContentItem contentItem, ContentItem previousContentItem) : base(contentItem)
         {
@@ -10,7 +10,5 @@ namespace OrchardCore.ContentManagement.Handlers
 
         public ContentItem PublishingItem { get; set; }
         public ContentItem PreviousItem { get; set; }
-
-        public bool Cancel { get; set; }
     }
 }

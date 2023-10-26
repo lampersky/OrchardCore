@@ -511,7 +511,9 @@ namespace OrchardCore.Contents.Controllers
 
             if (contentItem != null)
             {
-                await _contentManager.DiscardDraftAsync(contentItem);
+                var result = await _contentManager.DiscardDraftAsync(contentItem);
+
+                // TODO: result.
 
                 var typeDefinition = _contentDefinitionManager.GetTypeDefinition(contentItem.ContentType);
 

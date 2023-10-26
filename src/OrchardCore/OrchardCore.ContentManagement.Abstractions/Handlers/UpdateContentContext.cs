@@ -1,6 +1,6 @@
 namespace OrchardCore.ContentManagement.Handlers
 {
-    public class UpdateContentContext : ContentContextBase
+    public class UpdateContentContext : ShortCircutedContentContext
     {
         public UpdateContentContext(ContentItem contentItem) : base(contentItem)
         {

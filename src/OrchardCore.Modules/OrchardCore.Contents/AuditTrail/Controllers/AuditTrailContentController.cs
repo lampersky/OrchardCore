@@ -8,6 +8,7 @@ using OrchardCore.AuditTrail.Indexes;
 using OrchardCore.AuditTrail.Models;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display;
+using OrchardCore.ContentManagement.Handlers;
 using OrchardCore.Contents.AuditTrail.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Notify;
@@ -112,15 +113,21 @@ namespace OrchardCore.Contents.AuditTrail.Controllers
 
             var result = await _contentManager.RestoreAsync(contentItem);
 
-            if (!result.Succeeded)
+            if (result is ContentValidateResult cvr && !cvr.Succeeded)
             {
                 await _notifier.WarningAsync(H["'{0}' was not restored, the version is not valid.", contentItem.DisplayText]);
 
-                foreach (var error in result.Errors)
+                foreach (var error in cvr.Errors)
                 {
                     // Pass ErrorMessage as an argument to ensure it is encoded
                     await _notifier.WarningAsync(new LocalizedHtmlString(nameof(AuditTrailContentController.Restore), "{0}", false, error.ErrorMessage));
                 }
+
+                return RedirectToAction("Index", "Admin", new { area = "OrchardCore.AuditTrail" });
+            }
+            else if (result is ShortCircuitResult scr)
+            {
+                await _notifier.WarningAsync(H["'{0}' was not restored. Reason(s): {1}", contentItem.DisplayText, string.Join(' ', scr.Reasons)]);
 
                 return RedirectToAction("Index", "Admin", new { area = "OrchardCore.AuditTrail" });
             }

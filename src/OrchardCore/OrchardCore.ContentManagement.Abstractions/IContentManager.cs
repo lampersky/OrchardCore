@@ -25,14 +25,14 @@ namespace OrchardCore.ContentManagement
         /// Updates a content item without creating a new version.
         /// </summary>
         /// <param name="contentItem">The existing content item with updated data</param>
-        Task UpdateAsync(ContentItem contentItem);
+        Task<IContentResult> UpdateAsync(ContentItem contentItem);
 
         /// <summary>
         /// Creates (persists) a new content item with the specified version
         /// </summary>
         /// <param name="contentItem">The content instance filled with all necessary data</param>
         /// <param name="options">The version to create the item with</param>
-        Task CreateAsync(ContentItem contentItem, VersionOptions options);
+        Task<IContentResult> CreateAsync(ContentItem contentItem, VersionOptions options);
 
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace OrchardCore.ContentManagement
         /// </summary>
         /// <param name="contentItem"></param>
         /// <returns>The validation <see cref="ContentValidateResult"/> result.</returns>
-        Task<ContentValidateResult> RestoreAsync(ContentItem contentItem);
+        Task<IContentResult> RestoreAsync(ContentItem contentItem);
 
         /// <summary>
         /// Gets the published content item with the specified id
@@ -123,22 +123,22 @@ namespace OrchardCore.ContentManagement
         /// the content item.
         /// </summary>
         /// <param name="contentItem"></param>
-        Task RemoveAsync(ContentItem contentItem);
+        Task<IContentResult> RemoveAsync(ContentItem contentItem);
 
         /// <summary>
         /// Deletes the draft version of a content item.
         /// </summary>
         /// <param name="contentItem"></param>
-        Task DiscardDraftAsync(ContentItem contentItem);
+        Task<IContentResult> DiscardDraftAsync(ContentItem contentItem);
 
         /// <summary>
         /// Saves the content item if it is a draft version.
         /// </summary>
         /// <param name="contentItem"></param>
-        Task SaveDraftAsync(ContentItem contentItem);
+        Task<IContentResult> SaveDraftAsync(ContentItem contentItem);
 
-        Task PublishAsync(ContentItem contentItem);
-        Task UnpublishAsync(ContentItem contentItem);
+        Task<IContentResult> PublishAsync(ContentItem contentItem);
+        Task<IContentResult> UnpublishAsync(ContentItem contentItem);
         Task<TAspect> PopulateAspectAsync<TAspect>(IContent content, TAspect aspect);
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace OrchardCore.ContentManagement
         /// </summary>
         /// <param name="contentItem">The content item to clone</param>
         /// <returns>Clone of the item</returns>
-        Task<ContentItem> CloneAsync(ContentItem contentItem);
+        Task<IContentResult> CloneAsync(ContentItem contentItem);
     }
 
     public static class ContentManagerExtensions

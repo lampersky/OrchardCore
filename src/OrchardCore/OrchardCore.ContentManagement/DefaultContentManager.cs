@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -392,27 +391,34 @@ namespace OrchardCore.ContentManagement
             return await LoadAsync(contentItem);
         }
 
-        public async Task SaveDraftAsync(ContentItem contentItem)
+        public async Task<IContentResult> SaveDraftAsync(ContentItem contentItem)
         {
             if (!contentItem.Latest || contentItem.Published)
             {
-                return;
+                return new SucceededResult();
             }
 
             var context = new SaveDraftContentContext(contentItem);
 
             await Handlers.InvokeAsync((handler, context) => handler.DraftSavingAsync(context), context, _logger);
 
+            if (context.ShortCircuitResult.Cancelled)
+            {
+                return context.ShortCircuitResult;
+            }
+
             _session.Save(contentItem, checkConcurrency: true);
 
             await ReversedHandlers.InvokeAsync((handler, context) => handler.DraftSavedAsync(context), context, _logger);
+
+            return new SucceededResult();
         }
 
-        public async Task PublishAsync(ContentItem contentItem)
+        public async Task<IContentResult> PublishAsync(ContentItem contentItem)
         {
             if (contentItem.Published)
             {
-                return;
+                return new SucceededResult();
             }
 
             // Create a context for the item and it's previous published record
@@ -428,9 +434,9 @@ namespace OrchardCore.ContentManagement
             // invoke handlers to acquire state, or at least establish lazy loading callbacks
             await Handlers.InvokeAsync((handler, context) => handler.PublishingAsync(context), context, _logger);
 
-            if (context.Cancel)
+            if (context.ShortCircuitResult.Cancelled)
             {
-                return;
+                return context.ShortCircuitResult;
             }
 
             if (previous != null)
@@ -443,14 +449,16 @@ namespace OrchardCore.ContentManagement
             _session.Save(contentItem, checkConcurrency: true);
 
             await ReversedHandlers.InvokeAsync((handler, context) => handler.PublishedAsync(context), context, _logger);
+
+            return new SucceededResult();
         }
 
-        public async Task UnpublishAsync(ContentItem contentItem)
+        public async Task<IContentResult> UnpublishAsync(ContentItem contentItem)
         {
             // This method needs to be called using the latest version
             if (!contentItem.Latest)
             {
-                throw new InvalidOperationException("Not the latest version.");
+                return new NotSucceededResult("Not the latest version.");
             }
 
             ContentItem publishedItem;
@@ -468,7 +476,7 @@ namespace OrchardCore.ContentManagement
             if (publishedItem == null)
             {
                 // No published version exists. no work to perform.
-                return;
+                return new NotSucceededResult("No published version exists.");
             }
 
             // Create a context for the item. the publishing version is null in this case
@@ -481,11 +489,18 @@ namespace OrchardCore.ContentManagement
 
             await Handlers.InvokeAsync((handler, context) => handler.UnpublishingAsync(context), context, _logger);
 
+            if (context.ShortCircuitResult.Cancelled)
+            {
+                return context.ShortCircuitResult;
+            }
+
             publishedItem.Published = false;
             publishedItem.ModifiedUtc = _clock.UtcNow;
             _session.Save(publishedItem, checkConcurrency: true);
 
             await ReversedHandlers.InvokeAsync((handler, context) => handler.UnpublishedAsync(context), context, _logger);
+
+            return new SucceededResult();
         }
 
         protected async Task<ContentItem> BuildNewVersionAsync(ContentItem existingContentItem)
@@ -530,6 +545,7 @@ namespace OrchardCore.ContentManagement
             var context = new VersionContentContext(existingContentItem, buildingContentItem);
 
             await Handlers.InvokeAsync((handler, context) => handler.VersioningAsync(context), context, _logger);
+
             await ReversedHandlers.InvokeAsync((handler, context) => handler.VersionedAsync(context), context, _logger);
 
             return context.BuildingContentItem;
@@ -587,6 +603,7 @@ namespace OrchardCore.ContentManagement
                 var context = new VersionContentContext(existingContentItem, buildingContentItem);
 
                 await Handlers.InvokeAsync((handler, context) => handler.VersioningAsync(context), context, _logger);
+
                 await ReversedHandlers.InvokeAsync((handler, context) => handler.VersionedAsync(context), context, _logger);
 
                 finalVersions.Add(context.BuildingContentItem);
@@ -595,7 +612,7 @@ namespace OrchardCore.ContentManagement
             return finalVersions;
         }
 
-        public async Task CreateAsync(ContentItem contentItem, VersionOptions options)
+        public async Task<IContentResult> CreateAsync(ContentItem contentItem, VersionOptions options)
         {
             if (string.IsNullOrEmpty(contentItem.ContentItemVersionId))
             {
@@ -616,6 +633,11 @@ namespace OrchardCore.ContentManagement
             // invoke handlers to add information to persistent stores
             await Handlers.InvokeAsync((handler, context) => handler.CreatingAsync(context), context, _logger);
 
+            if (context.ShortCircuitResult.Cancelled)
+            {
+                return context.ShortCircuitResult;
+            }
+
             _session.Save(contentItem);
             _contentManagerSession.Store(contentItem);
 
@@ -631,6 +653,8 @@ namespace OrchardCore.ContentManagement
                 // invoke handlers to acquire state, or at least establish lazy loading callbacks
                 await ReversedHandlers.InvokeAsync((handler, context) => handler.PublishedAsync(context), publishContext, _logger);
             }
+
+            return new SucceededResult();
         }
 
         public Task<ContentValidateResult> CreateContentItemVersionAsync(ContentItem contentItem)
@@ -773,15 +797,22 @@ namespace OrchardCore.ContentManagement
             }
         }
 
-        public async Task UpdateAsync(ContentItem contentItem)
+        public async Task<IContentResult> UpdateAsync(ContentItem contentItem)
         {
             var context = new UpdateContentContext(contentItem);
 
             await Handlers.InvokeAsync((handler, context) => handler.UpdatingAsync(context), context, _logger);
 
+            if (context.ShortCircuitResult.Cancelled)
+            {
+                return context.ShortCircuitResult;
+            }
+
             _session.Save(contentItem);
 
             await ReversedHandlers.InvokeAsync((handler, context) => handler.UpdatedAsync(context), context, _logger);
+
+            return new SucceededResult();
         }
 
         public async Task<ContentValidateResult> ValidateAsync(ContentItem contentItem)
@@ -800,7 +831,7 @@ namespace OrchardCore.ContentManagement
             return validateContext.ContentValidateResult;
         }
 
-        public async Task<ContentValidateResult> RestoreAsync(ContentItem contentItem)
+        public async Task<IContentResult> RestoreAsync(ContentItem contentItem)
         {
             // Prepare record for restore.
             // So that a new record will be created.
@@ -812,8 +843,17 @@ namespace OrchardCore.ContentManagement
             var context = new RestoreContentContext(contentItem);
             await Handlers.InvokeAsync((handler, context) => handler.RestoringAsync(context), context, _logger);
 
+            if (context.ShortCircuitResult.Cancelled)
+            {
+                return context.ShortCircuitResult;
+            }
+
             // Invoke save and fire update handlers.
-            await UpdateAsync(contentItem);
+            var updateResult = await UpdateAsync(contentItem);
+            if (updateResult is ShortCircuitResult shortCircuitResult)
+            {
+                return shortCircuitResult;
+            }
 
             var validationResult = await ValidateAsync(contentItem);
             if (!validationResult.Succeeded)
@@ -833,7 +873,11 @@ namespace OrchardCore.ContentManagement
                 _session.Save(latestVersion);
             }
 
-            await CreateAsync(contentItem, VersionOptions.Draft);
+            var createRresult = await CreateAsync(contentItem, VersionOptions.Draft);
+            if (createRresult is ShortCircuitResult)
+            {
+                return createRresult;
+            }
 
             await ReversedHandlers.InvokeAsync((handler, context) => handler.RestoredAsync(context), context, _logger);
 
@@ -853,7 +897,7 @@ namespace OrchardCore.ContentManagement
             return aspect;
         }
 
-        public async Task RemoveAsync(ContentItem contentItem)
+        public async Task<IContentResult> RemoveAsync(ContentItem contentItem)
         {
             var activeVersions = await _session.Query<ContentItem, ContentItemIndex>()
                 .Where(x =>
@@ -862,12 +906,17 @@ namespace OrchardCore.ContentManagement
 
             if (!activeVersions.Any())
             {
-                return;
+                return new NotSucceededResult("No active versions.");
             }
 
             var context = new RemoveContentContext(contentItem, true);
 
             await Handlers.InvokeAsync((handler, context) => handler.RemovingAsync(context), context, _logger);
+
+            if (context.ShortCircuitResult.Cancelled)
+            {
+                return context.ShortCircuitResult;
+            }
 
             foreach (var version in activeVersions)
             {
@@ -877,13 +926,15 @@ namespace OrchardCore.ContentManagement
             }
 
             await ReversedHandlers.InvokeAsync((handler, context) => handler.RemovedAsync(context), context, _logger);
+
+            return new SucceededResult();
         }
 
-        public async Task DiscardDraftAsync(ContentItem contentItem)
+        public async Task<IContentResult> DiscardDraftAsync(ContentItem contentItem)
         {
             if (contentItem.Published || !contentItem.Latest)
             {
-                throw new InvalidOperationException("Not a draft version.");
+                return new NotSucceededResult("Not a draft version.");
             }
 
             var publishedItem = await GetAsync(contentItem.ContentItemId, VersionOptions.Published);
@@ -891,6 +942,11 @@ namespace OrchardCore.ContentManagement
             var context = new RemoveContentContext(contentItem, publishedItem == null);
 
             await Handlers.InvokeAsync((handler, context) => handler.RemovingAsync(context), context, _logger);
+
+            if (context.ShortCircuitResult.Cancelled)
+            {
+                return context.ShortCircuitResult;
+            }
 
             contentItem.Latest = false;
             _session.Save(contentItem);
@@ -902,9 +958,11 @@ namespace OrchardCore.ContentManagement
                 publishedItem.Latest = true;
                 _session.Save(publishedItem);
             }
+
+            return new SucceededResult();
         }
 
-        public async Task<ContentItem> CloneAsync(ContentItem contentItem)
+        public async Task<IContentResult> CloneAsync(ContentItem contentItem)
         {
             var cloneContentItem = await NewAsync(contentItem.ContentType);
             cloneContentItem.DisplayText = contentItem.DisplayText;
@@ -916,11 +974,16 @@ namespace OrchardCore.ContentManagement
 
             await Handlers.InvokeAsync((handler, context) => handler.CloningAsync(context), context, _logger);
 
+            if (context.ShortCircuitResult.Cancelled)
+            {
+                return context.ShortCircuitResult;
+            }
+
             _session.Save(context.CloneContentItem);
 
             await ReversedHandlers.InvokeAsync((handler, context) => handler.ClonedAsync(context), context, _logger);
 
-            return context.CloneContentItem;
+            return new SucceededResult<ContentItem>(context.CloneContentItem);
         }
 
         private async Task<ContentValidateResult> CreateContentItemVersionAsync(ContentItem contentItem, IEnumerable<ContentItem> evictionVersions = null)
@@ -1102,7 +1165,7 @@ namespace OrchardCore.ContentManagement
             return result;
         }
 
-        private async Task RemoveLatestVersionAsync(ContentItem contentItem, IEnumerable<ContentItem> evictionVersions)
+        private async Task<IContentResult> RemoveLatestVersionAsync(ContentItem contentItem, IEnumerable<ContentItem> evictionVersions)
         {
             ContentItem latestVersion;
             if (evictionVersions == null)
@@ -1116,22 +1179,26 @@ namespace OrchardCore.ContentManagement
                 latestVersion = evictionVersions.FirstOrDefault(x => x.Latest);
             }
 
-            if (latestVersion != null)
+            if (latestVersion == null)
             {
-                var publishedVersion = evictionVersions?.FirstOrDefault(x => x.Published);
-
-                var removeContext = new RemoveContentContext(contentItem, publishedVersion == null);
-
-                await Handlers.InvokeAsync((handler, context) => handler.RemovingAsync(context), removeContext, _logger);
-
-                latestVersion.Latest = false;
-                _session.Save(latestVersion);
-
-                await ReversedHandlers.InvokeAsync((handler, context) => handler.RemovedAsync(context), removeContext, _logger);
+                return new NotSucceededResult("Latest version do not exists.");
             }
+
+            var publishedVersion = evictionVersions?.FirstOrDefault(x => x.Published);
+
+            var removeContext = new RemoveContentContext(contentItem, publishedVersion == null);
+
+            await Handlers.InvokeAsync((handler, context) => handler.RemovingAsync(context), removeContext, _logger);
+
+            latestVersion.Latest = false;
+            _session.Save(latestVersion);
+
+            await ReversedHandlers.InvokeAsync((handler, context) => handler.RemovedAsync(context), removeContext, _logger);
+
+            return new SucceededResult();
         }
 
-        private async Task RemovePublishedVersionAsync(ContentItem contentItem, IEnumerable<ContentItem> evictionVersions)
+        private async Task<IContentResult> RemovePublishedVersionAsync(ContentItem contentItem, IEnumerable<ContentItem> evictionVersions)
         {
             ContentItem publishedVersion;
             if (evictionVersions == null)
@@ -1145,20 +1212,29 @@ namespace OrchardCore.ContentManagement
                 publishedVersion = evictionVersions.FirstOrDefault(x => x.Published);
             }
 
-            if (publishedVersion != null)
+            if (publishedVersion == null)
             {
-                var removeContext = new RemoveContentContext(contentItem, true);
-
-                await Handlers.InvokeAsync((handler, context) => handler.RemovingAsync(context), removeContext, _logger);
-
-                publishedVersion.Published = false;
-                _session.Save(publishedVersion);
-
-                await ReversedHandlers.InvokeAsync((handler, context) => handler.RemovedAsync(context), removeContext, _logger);
+                return new NotSucceededResult("Published version do not exists.");
             }
+
+            var removeContext = new RemoveContentContext(contentItem, true);
+
+            await Handlers.InvokeAsync((handler, context) => handler.RemovingAsync(context), removeContext, _logger);
+
+            if (removeContext.ShortCircuitResult.Cancelled)
+            {
+                return removeContext.ShortCircuitResult;
+            }
+
+            publishedVersion.Published = false;
+            _session.Save(publishedVersion);
+
+            await ReversedHandlers.InvokeAsync((handler, context) => handler.RemovedAsync(context), removeContext, _logger);
+
+            return new SucceededResult();
         }
 
-        private async Task RemoveVersionsAsync(ContentItem contentItem, IEnumerable<ContentItem> evictionVersions)
+        private async Task<IContentResult> RemoveVersionsAsync(ContentItem contentItem, IEnumerable<ContentItem> evictionVersions)
         {
             IEnumerable<ContentItem> activeVersions;
             if (evictionVersions == null)
@@ -1173,21 +1249,30 @@ namespace OrchardCore.ContentManagement
                 activeVersions = evictionVersions.Where(x => x.Latest || x.Published);
             }
 
-            if (activeVersions.Any())
+            if (!activeVersions.Any())
             {
-                var removeContext = new RemoveContentContext(contentItem, true);
-
-                await Handlers.InvokeAsync((handler, context) => handler.RemovingAsync(context), removeContext, _logger);
-
-                foreach (var version in activeVersions)
-                {
-                    version.Published = false;
-                    version.Latest = false;
-                    _session.Save(version);
-                }
-
-                await ReversedHandlers.InvokeAsync((handler, context) => handler.RemovedAsync(context), removeContext, _logger);
+                return new NotSucceededResult("Active version do not exists.");
             }
+
+            var removeContext = new RemoveContentContext(contentItem, true);
+
+            await Handlers.InvokeAsync((handler, context) => handler.RemovingAsync(context), removeContext, _logger);
+
+            if (removeContext.ShortCircuitResult.Cancelled)
+            {
+                return removeContext.ShortCircuitResult;
+            }
+
+            foreach (var version in activeVersions)
+            {
+                version.Published = false;
+                version.Latest = false;
+                _session.Save(version);
+            }
+
+            await ReversedHandlers.InvokeAsync((handler, context) => handler.RemovedAsync(context), removeContext, _logger);
+
+            return new SucceededResult();
         }
     }
 }

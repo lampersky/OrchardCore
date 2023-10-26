@@ -1,6 +1,6 @@
 namespace OrchardCore.ContentManagement.Handlers
 {
-    public class RemoveContentContext : ContentContextBase
+    public class RemoveContentContext : ShortCircutedContentContext
     {
         public RemoveContentContext(ContentItem contentItem, bool noActiveVersionLeft = false) : base(contentItem)
         {

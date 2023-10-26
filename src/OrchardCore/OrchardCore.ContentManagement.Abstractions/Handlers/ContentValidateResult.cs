@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OrchardCore.ContentManagement.Handlers
 {
-    public class ContentValidateResult
+    public class ContentValidateResult : ContentResultBase
     {
         private readonly List<ValidationResult> _errors = new();
 
@@ -12,13 +12,16 @@ namespace OrchardCore.ContentManagement.Handlers
         /// <summary>
         /// Success may be altered by a handler during the validated async event.
         /// </summary>
-        public bool Succeeded { get; set; } = true;
+
+        public ContentValidateResult() : base(true)
+        {
+
+        }
 
         public void Fail(ValidationResult error)
         {
             Succeeded = false;
             _errors.Add(error);
         }
-
     }
 }
