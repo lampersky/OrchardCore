@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display;
+using OrchardCore.ContentManagement.Handlers;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.ContentManagement.Records;
@@ -537,13 +539,27 @@ namespace OrchardCore.Contents.Controllers
 
             if (contentItem != null)
             {
-                await _contentManager.RemoveAsync(contentItem);
-
+                var removeResult = await _contentManager.RemoveAsync(contentItem);
                 var typeDefinition = _contentDefinitionManager.GetTypeDefinition(contentItem.ContentType);
 
-                await _notifier.SuccessAsync(string.IsNullOrWhiteSpace(typeDefinition?.DisplayName)
-                    ? H["That content has been removed."]
-                    : H["That {0} has been removed.", typeDefinition.DisplayName]);
+                if (removeResult is SucceededResult)
+                {
+                    await _notifier.SuccessAsync(string.IsNullOrWhiteSpace(typeDefinition?.DisplayName)
+                        ? H["That content has been removed."]
+                        : H["That {0} has been removed.", typeDefinition.DisplayName]);
+                }
+                else if (removeResult is ShortCircuitResult scr)
+                {
+                    await _notifier.SuccessAsync(string.IsNullOrWhiteSpace(typeDefinition?.DisplayName)
+                        ? H["That content has not been removed. {0}", string.Join(' ', scr.Reasons)]
+                        : H["That {0} has not been removed. {1}", typeDefinition.DisplayName, string.Join(' ', scr.Reasons)]);
+                }
+                else if (removeResult is NotSucceededResult nsr)
+                {
+                    await _notifier.SuccessAsync(string.IsNullOrWhiteSpace(typeDefinition?.DisplayName)
+                        ? H["That content has not been removed. {0}", nsr.Reason]
+                        : H["That {0} has not been removed. {1}", typeDefinition.DisplayName, nsr.Reason]);
+                }
             }
 
             return Url.IsLocalUrl(returnUrl) ? (IActionResult)this.LocalRedirect(returnUrl, true) : RedirectToAction(nameof(List));

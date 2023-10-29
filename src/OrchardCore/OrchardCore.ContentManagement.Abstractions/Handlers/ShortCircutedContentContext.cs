@@ -6,4 +6,12 @@ namespace OrchardCore.ContentManagement.Handlers
 
         public ShortCircuitResult ShortCircuitResult { get; } = new ShortCircuitResult();
     }
+
+    public static class ShortCircutedContentContextExtensions
+    {
+        public static void ShortCircuit(this ShortCircutedContentContext context, string reason)
+        {
+            context.ShortCircuitResult.ShortCircuit(reason);
+        }
+    }
 }
