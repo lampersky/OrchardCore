@@ -31,7 +31,7 @@
     <PackageVersion Include="GraphQL.MicrosoftDI" Version="8.2.1" />
     <PackageVersion Include="GraphQL.SystemTextJson" Version="8.2.1" />
     <PackageVersion Include="Jint" Version="4.1.0" />
-    <PackageVersion Include="JsonPath.Net" Version="2.0.0" />
+    <PackageVersion Include="JsonPath.Net" Version="2.1.1" />
     <PackageVersion Include="HtmlSanitizer" Version="8.2.871-beta" />
     <PackageVersion Include="Irony" Version="1.5.3" />
     <PackageVersion Include="libphonenumber-csharp" Version="8.13.51" />
@@ -53,7 +53,7 @@
     <PackageVersion Include="ncrontab" Version="3.3.3" />
     <PackageVersion Include="NJsonSchema" Version="11.0.2" />
     <PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.15" />
-    <PackageVersion Include="NodaTime" Version="3.2.0" />
+    <PackageVersion Include="NodaTime" Version="3.2.1" />
     <PackageVersion Include="OpenIddict.Core" Version="5.8.0" />
     <PackageVersion Include="OpenIddict.Server.AspNetCore" Version="5.8.0" />
     <PackageVersion Include="OpenIddict.Server.DataProtection" Version="5.8.0" />
