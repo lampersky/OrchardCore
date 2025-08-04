@@ -1,0 +1,10 @@
+@model OrchardCore.DynamicField.ViewModels.DisplayDynamicFieldViewModel
+@using OrchardCore.Mvc.Utilities
+
+@{
+    var name = (Model.PartFieldDefinition.PartDefinition.Name + "-" + Model.PartFieldDefinition.Name).HtmlClassify();
+}
+
+<div class="field field-type-textfield field-name-@name">
+    todo
+</div>
