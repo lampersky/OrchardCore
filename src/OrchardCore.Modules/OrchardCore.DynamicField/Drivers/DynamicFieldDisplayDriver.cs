@@ -1,3 +1,6 @@
+using System;
+using System.Dynamic;
+using System.Text.Json;
 using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
@@ -19,6 +22,7 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Fields
     {
         return Initialize<DisplayDynamicFieldViewModel>(GetDisplayShapeType(context), model =>
         {
+            model.Value = JsonSerializer.Serialize(field.Value);
             model.Field = field;
             model.Part = context.ContentPart;
             model.PartFieldDefinition = context.PartFieldDefinition;
@@ -32,17 +36,21 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Fields
         return Initialize<EditDynamicFieldViewModel>(GetEditorShapeType(context), model =>
         {
             // var settings = context.PartFieldDefinition.GetSettings<DynamicFieldSettings>();
-            // model.Text = context.IsNew && field.Value == null ? settings.DefaultValue : field.Value;
-            // model.Field = field;
-            // model.Part = context.ContentPart;
-            // model.PartFieldDefinition = context.PartFieldDefinition;
+            model.Value = JsonSerializer.Serialize(field.Value);
+            model.Field = field;
+            model.Part = context.ContentPart;
+            model.PartFieldDefinition = context.PartFieldDefinition;
         });
     }
 
     public override async Task<IDisplayResult> UpdateAsync(Fields.DynamicField field, UpdateFieldEditorContext context)
     {
-        await context.Updater.TryUpdateModelAsync(field, Prefix, f => f.Value);
+        var model = new EditDynamicFieldViewModel();
+
+        await context.Updater.TryUpdateModelAsync(model, Prefix, f => f.Value);
         // var settings = context.PartFieldDefinition.GetSettings<DynamicFieldSettings>();
+
+        field.Value = JsonSerializer.Deserialize<ExpandoObject>(model.Value);
 
         // if (settings.Required && field.Value == null)
         // {

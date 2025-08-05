@@ -1,0 +1,25 @@
+@model OrchardCore.DynamicField.Settings.DynamicFieldSettings
+
+<div class="mb-3">
+    <div class="w-md-75 w-xl-50 pe-md-3">
+        <label asp-for="Code" class="form-label">@T["Code"]</label>
+        <textarea asp-for="Code" rows="2" class="form-control"></textarea>
+    </div>
+    <span class="hint">@T["The component code."]</span>
+</div>
+
+<div class="mb-3">
+    <div class="w-md-75 w-xl-50 pe-md-3">
+        <label asp-for="InlineScript" class="form-label">@T["Code"]</label>
+        <textarea asp-for="InlineScript" rows="2" class="form-control"></textarea>
+    </div>
+    <span class="hint">@T["The inline javascript code."]</span>
+</div>
+
+<div class="mb-3">
+    <div class="w-md-75 w-xl-50 pe-md-3">
+        <label asp-for="InlineStyle" class="form-label">@T["Code"]</label>
+        <textarea asp-for="InlineStyle" rows="2" class="form-control"></textarea>
+    </div>
+    <span class="hint">@T["The inline css style."]</span>
+</div>

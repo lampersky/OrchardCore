@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
+using OrchardCore.ContentTypes.Editors;
 using OrchardCore.DynamicField.Drivers;
+using OrchardCore.DynamicField.Settings;
 using OrchardCore.DynamicField.ViewModels;
 using OrchardCore.Modules;
 
@@ -16,6 +18,7 @@ public class Startup : StartupBase
     {
         services.AddContentField<Fields.DynamicField>()
             .UseDisplayDriver<DynamicFieldDisplayDriver>();
+        services.AddScoped<IContentPartFieldDefinitionDisplayDriver, DynamicFieldSettingsDisplayDriver>();
 
         services.Configure<TemplateOptions>(o =>
         {
