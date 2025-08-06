@@ -22,11 +22,15 @@
 {
     foreach (var scriptUrl in settings.ScriptUrls.Split("\n"))
     {
-        if (scriptUrl != null)
-        {
-            var a = 1234;
-        }
         <script depends-on="parent-component" at="Foot" asp-src="@scriptUrl"></script>
+    }
+}
+
+@if (!string.IsNullOrEmpty(settings.StyleUrls))
+{
+    foreach (var styleUrl in settings.StyleUrls.Split("\n"))
+    {
+        <style at="Head" asp-src="@styleUrl"></style>
     }
 }
 
