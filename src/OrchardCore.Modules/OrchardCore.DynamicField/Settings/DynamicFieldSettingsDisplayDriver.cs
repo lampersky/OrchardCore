@@ -15,6 +15,8 @@ public sealed class DynamicFieldSettingsDisplayDriver : ContentPartFieldDefiniti
             model.Code = settings.Code;
             model.InlineStyle = settings.InlineStyle;
             model.InlineScript = settings.InlineScript;
+            model.ScriptUrls = settings.ScriptUrls;
+            model.StyleUrls = settings.StyleUrls;
         }).Location("Content");
     }
 

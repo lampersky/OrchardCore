@@ -10,7 +10,7 @@
 
 <div class="mb-3">
     <div class="w-md-75 w-xl-50 pe-md-3">
-        <label asp-for="InlineScript" class="form-label">@T["Code"]</label>
+        <label asp-for="InlineScript" class="form-label">@T["Script"]</label>
         <textarea asp-for="InlineScript" rows="2" class="form-control"></textarea>
     </div>
     <span class="hint">@T["The inline javascript code."]</span>
@@ -18,8 +18,18 @@
 
 <div class="mb-3">
     <div class="w-md-75 w-xl-50 pe-md-3">
-        <label asp-for="InlineStyle" class="form-label">@T["Code"]</label>
+        <label asp-for="InlineStyle" class="form-label">@T["Style"]</label>
         <textarea asp-for="InlineStyle" rows="2" class="form-control"></textarea>
     </div>
     <span class="hint">@T["The inline css style."]</span>
 </div>
+
+<div class="mb-3">
+    <div class="w-md-75 w-xl-50 pe-md-3">
+        <label asp-for="ScriptUrls" class="form-label">@T["Script Urls"]</label>
+        <textarea asp-for="ScriptUrls" rows="2" class="form-control"></textarea>
+    </div>
+    <span class="hint">@T["Additional script urls."]</span>
+</div>
+
+~/OrchardCore.DynamicField/Scripts/parent-component.js

@@ -1,6 +1,6 @@
-namespace OrchardCore.DynamicField.Settings;
+namespace OrchardCore.DynamicField.ViewModels;
 
-public class DynamicFieldSettings
+public class DynamicFieldSettingsViewModel
 {
     public string Code { get; set; }
     public string InlineScript { get; set; }

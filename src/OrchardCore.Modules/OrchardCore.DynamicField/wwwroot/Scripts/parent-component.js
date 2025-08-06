@@ -13,24 +13,31 @@ class ParentComponent extends HTMLElement {
     }
 
     connectedCallback() {
+
         this.addEventListener('value-changed', (event) => {
             this.value = JSON.stringify(event.detail);
+        });
+
+        this.shadowRoot.querySelector('slot').addEventListener('slotchange', (event) => {
+            requestAnimationFrame(() => {
+                this.notifyChildren(this.value);
+            });
         });
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
         if (name === 'value' && oldVal !== newVal) {
             this._internals.setFormValue(newVal);
-            this.notifyChildren(JSON.parse(newVal));
+            this.notifyChildren(newVal);
         }
     }
 
-    notifyChildren(value) {
+    notifyChildren(str) {
         const slot = this.shadowRoot.querySelector('slot');
         const assignedElements = slot.assignedElements();
         assignedElements.forEach(el => {
             el.dispatchEvent(new CustomEvent('value-changed', {
-                detail: value,
+                detail: JSON.parse(str),
                 bubbles: true,
                 composed: true,
             }));
