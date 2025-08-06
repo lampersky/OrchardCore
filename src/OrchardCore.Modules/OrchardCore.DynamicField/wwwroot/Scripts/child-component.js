@@ -8,10 +8,9 @@ class ChildComponent extends HTMLElement {
         this.shadowRoot.innerHTML = `
           <div>
             <h4>Child Component</h4>
-            <p>Parent value is: <span id="parentVal">Unknown</span></p>
             <div>
-            <input name="latitude"></input>
-            <input name="longitude"></input>
+              <input name="latitude"></input>
+              <input name="longitude"></input>
             </div>
           </div>`;
 
@@ -22,7 +21,6 @@ class ChildComponent extends HTMLElement {
             input.addEventListener('input', () => {
                 this.dispatchEvent(new CustomEvent('value-changed', {
                     detail: {
-                        now: new Date().toJSON(),
                         latitude: this.latitude.value,
                         longitude: this.longitude.value,
                     },
@@ -39,7 +37,6 @@ class ChildComponent extends HTMLElement {
     updateValue(detail) {
         this.latitude.value = detail.latitude;
         this.longitude.value = detail.longitude;
-        this.shadowRoot.querySelector('#parentVal').textContent = JSON.stringify(detail);
     }
 }
 

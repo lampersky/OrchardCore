@@ -1,10 +1,6 @@
 class ParentComponent extends HTMLElement {
     static formAssociated = true;
 
-    static get observedAttributes() {
-        return ['value'];
-    }
-
     constructor() {
         super();
         this._internals = this.attachInternals();
@@ -12,15 +8,18 @@ class ParentComponent extends HTMLElement {
         this.shadowRoot.innerHTML = `<slot></slot>`;
     }
 
-    connectedCallback() {
+    static get observedAttributes() {
+        return ['value'];
+    }
 
+    connectedCallback() {
         this.addEventListener('value-changed', (event) => {
-            this.value = JSON.stringify(event.detail);
+            this.setAttribute('value', JSON.stringify(event.detail));
         });
 
         this.shadowRoot.querySelector('slot').addEventListener('slotchange', (event) => {
             requestAnimationFrame(() => {
-                this.notifyChildren(this.value);
+                this.notifyChildren(this.getAttribute('value'));
             });
         });
     }
@@ -28,7 +27,9 @@ class ParentComponent extends HTMLElement {
     attributeChangedCallback(name, oldVal, newVal) {
         if (name === 'value' && oldVal !== newVal) {
             this._internals.setFormValue(newVal);
-            this.notifyChildren(newVal);
+            requestAnimationFrame(() => {
+                this.notifyChildren(newVal);
+            });
         }
     }
 
@@ -37,11 +38,22 @@ class ParentComponent extends HTMLElement {
         const assignedElements = slot.assignedElements();
         assignedElements.forEach(el => {
             el.dispatchEvent(new CustomEvent('value-changed', {
-                detail: JSON.parse(str),
-                bubbles: true,
+                detail: JSON.parse(this.unescapeHTML(str)),
                 composed: true,
             }));
         });
+    }
+
+    //unescapeHTML(str) {
+    //    const temp = document.createElement("textarea");
+    //    temp.innerHTML = str;
+    //    return temp.value;
+    //}
+
+    unescapeHTML(str) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(str, "text/html");
+        return doc.documentElement.textContent;
     }
 
     get value() {
