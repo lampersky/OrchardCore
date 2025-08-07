@@ -26,6 +26,14 @@
     }
 }
 
+@if (!string.IsNullOrEmpty(settings.ScriptModuleUrls))
+{
+    foreach (var scriptUrl in settings.ScriptModuleUrls.Split("\n"))
+    {
+        <script depends-on="parent-component" at="Foot" asp-src="@scriptUrl" type="module"></script>
+    }
+}
+
 @if (!string.IsNullOrEmpty(settings.StyleUrls))
 {
     foreach (var styleUrl in settings.StyleUrls.Split("\n"))

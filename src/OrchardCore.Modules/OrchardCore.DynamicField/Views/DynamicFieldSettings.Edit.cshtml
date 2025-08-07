@@ -26,8 +26,24 @@
 
 <div class="mb-3">
     <div class="w-md-75 w-xl-50 pe-md-3">
+        <label asp-for="ScriptModuleUrls" class="form-label">@T["Script Urls"]</label>
+        <textarea asp-for="ScriptModuleUrls" rows="2" class="form-control"></textarea>
+    </div>
+    <span class="hint">@T["Additional module script urls."]</span>
+</div>
+
+<div class="mb-3">
+    <div class="w-md-75 w-xl-50 pe-md-3">
         <label asp-for="ScriptUrls" class="form-label">@T["Script Urls"]</label>
         <textarea asp-for="ScriptUrls" rows="2" class="form-control"></textarea>
     </div>
     <span class="hint">@T["Additional script urls."]</span>
+</div>
+
+<div class="mb-3">
+    <div class="w-md-75 w-xl-50 pe-md-3">
+        <label asp-for="StyleUrls" class="form-label">@T["Style Urls"]</label>
+        <textarea asp-for="StyleUrls" rows="2" class="form-control"></textarea>
+    </div>
+    <span class="hint">@T["Additional style urls."]</span>
 </div>

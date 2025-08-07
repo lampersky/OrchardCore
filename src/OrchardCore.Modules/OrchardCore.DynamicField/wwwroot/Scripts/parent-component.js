@@ -16,6 +16,12 @@ class ParentComponent extends HTMLElement {
         this.addEventListener('value-changed', (event) => {
             this.setAttribute('value', JSON.stringify(event.detail));
         });
+        this.addEventListener('initial-value', (event) => {
+            event.target.dispatchEvent(new CustomEvent('value-changed', {
+                detail: JSON.parse(this.unescapeHTML(this.getAttribute('value'))),
+                composed: true,
+            }));
+        });
 
         this.shadowRoot.querySelector('slot').addEventListener('slotchange', (event) => {
             requestAnimationFrame(() => {

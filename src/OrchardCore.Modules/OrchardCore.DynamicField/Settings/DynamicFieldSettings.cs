@@ -6,5 +6,6 @@ public class DynamicFieldSettings
     public string InlineScript { get; set; }
     public string InlineStyle { get; set; }
     public string ScriptUrls { get; set; }
+    public string ScriptModuleUrls { get; set; }
     public string StyleUrls { get; set; }
 }

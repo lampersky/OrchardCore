@@ -6,13 +6,14 @@ class ChildComponent extends HTMLElement {
 
     connectedCallback() {
         this.shadowRoot.innerHTML = `
-          <div>
-            <h4>Child Component</h4>
             <div>
-              <input name="latitude"></input>
-              <input name="longitude"></input>
+              <label for="latitude">Latitude:</label>
+              <input name="latitude" />
+
+              <label for="longitude">Longitude:</label>
+              <input name="longitude" />
             </div>
-          </div>`;
+        `;
 
         this.latitude = this.shadowRoot.querySelector('input[name="latitude"]');
         this.longitude = this.shadowRoot.querySelector('input[name="longitude"]');
@@ -32,11 +33,13 @@ class ChildComponent extends HTMLElement {
         this.addEventListener('value-changed', (event) => {
             this.updateValue(event.detail);
         });
+
+        this.dispatchEvent(new CustomEvent('initial-value', { bubbles: true, composed: true }));
     }
 
     updateValue(detail) {
-        this.latitude.value = detail.latitude;
-        this.longitude.value = detail.longitude;
+        this.latitude.value = detail?.latitude;
+        this.longitude.value = detail?.longitude;
     }
 }
 
