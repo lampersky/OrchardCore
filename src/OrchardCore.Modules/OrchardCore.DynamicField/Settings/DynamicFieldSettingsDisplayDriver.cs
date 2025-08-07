@@ -18,6 +18,14 @@ public sealed class DynamicFieldSettingsDisplayDriver : ContentPartFieldDefiniti
             model.ScriptUrls = settings.ScriptUrls;
             model.StyleUrls = settings.StyleUrls;
             model.ScriptModuleUrls = settings.ScriptModuleUrls;
+            if (settings.Resources.Count == 0)
+            {
+                for (var i = 0; i < 5; i++)
+                {
+                    settings.Resources.Add(new());
+                }
+            }
+            model.Resources = settings.Resources;
         }).Location("Content");
     }
 

@@ -1,6 +1,7 @@
 @model OrchardCore.DynamicField.ViewModels.EditDynamicFieldViewModel
 @using OrchardCore.DynamicField.Settings
 @using OrchardCore.Mvc.Utilities
+@using OrchardCore.ResourceManagement
 @{
     var settings = Model.PartFieldDefinition.GetSettings<DynamicFieldSettings>();
     var culture = await Orchard.GetContentCultureAsync(Model.Field.ContentItem);
@@ -17,6 +18,36 @@
 </div>
 
 <script asp-name="parent-component" at="Foot" asp-src="~/OrchardCore.DynamicField/Scripts/parent-component.js"></script>
+
+@foreach (var resource in settings.Resources)
+{
+    if (resource.IsInline)
+    {
+        if (resource.Type == ResourceType.Script)
+        {
+            <script depends-on="parent-component" at="@resource.At">
+                @Html.Raw(resource.Src)
+            </script>
+        }
+        else if (resource.Type == ResourceType.Style)
+        {
+            <style at="@resource.At" asp-src="@resource.Src">
+                @Html.Raw(resource.Src)
+            </style>
+        }
+    }
+    else
+    {
+        if (resource.Type == ResourceType.Script)
+        {
+            <script depends-on="parent-component" at="@resource.At" asp-src="@resource.Src"></script>
+        }
+        else if (resource.Type == ResourceType.Style)
+        {
+            <style at="@resource.At" asp-src="@resource.Src"></style>
+        }
+    }
+}
 
 @if (!string.IsNullOrEmpty(settings.ScriptUrls))
 {

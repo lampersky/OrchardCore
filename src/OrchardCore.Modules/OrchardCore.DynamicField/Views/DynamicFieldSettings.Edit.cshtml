@@ -1,3 +1,5 @@
+@using OrchardCore.DynamicField.Settings
+@using OrchardCore.ResourceManagement
 @model OrchardCore.DynamicField.Settings.DynamicFieldSettings
 
 <div class="mb-3">
@@ -47,3 +49,49 @@
     </div>
     <span class="hint">@T["Additional style urls."]</span>
 </div>
+
+
+@for (int i = 0; i < Model.Resources.Count; i++)
+{
+    <div class="input-group mb-3">
+        <select class="form-select auto-width" id="type" asp-for="@Model.Resources[i].Type">
+            <option value="@ResourceType.Script" selected>Script</option>
+            <option value="@ResourceType.Style">Style</option>
+        </select>
+
+        <select class="form-select auto-width" id="at" asp-for="@Model.Resources[i].At">
+            <option value="@ResourceLocation.Foot" selected>Foot</option>
+            <option value="@ResourceLocation.Head">Head</option>
+        </select>
+
+        <div class="input-group-text">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="@Model.Resources[i].IsModule">
+                <label class="form-check-label" asp-for="@Model.Resources[i].IsModule">
+                    Module
+                </label>
+            </div>
+        </div>
+
+        <div class="input-group-text">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="checkInline" asp-for="@Model.Resources[i].IsInline" disabled>
+                <label class="form-check-label" asp-for="@Model.Resources[i].IsInline">
+                    Inline
+                </label>
+            </div>
+        </div>
+
+        <input type="text" class="form-control" aria-label="Text input with checkbox" asp-for="@Model.Resources[i].Src">
+    </div>
+}
+
+
+
+<style>
+    .form-select.auto-width {
+        width: auto;
+        max-width: fit-content;
+        display: inline-block;
+    }
+</style>
