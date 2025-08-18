@@ -10,46 +10,6 @@
     <span class="hint">@T["The component code."]</span>
 </div>
 
-<div class="mb-3">
-    <div class="w-md-75 w-xl-50 pe-md-3">
-        <label asp-for="InlineScript" class="form-label">@T["Script"]</label>
-        <textarea asp-for="InlineScript" rows="2" class="form-control"></textarea>
-    </div>
-    <span class="hint">@T["The inline javascript code."]</span>
-</div>
-
-<div class="mb-3">
-    <div class="w-md-75 w-xl-50 pe-md-3">
-        <label asp-for="InlineStyle" class="form-label">@T["Style"]</label>
-        <textarea asp-for="InlineStyle" rows="2" class="form-control"></textarea>
-    </div>
-    <span class="hint">@T["The inline css style."]</span>
-</div>
-
-<div class="mb-3">
-    <div class="w-md-75 w-xl-50 pe-md-3">
-        <label asp-for="ScriptModuleUrls" class="form-label">@T["Script Urls"]</label>
-        <textarea asp-for="ScriptModuleUrls" rows="2" class="form-control"></textarea>
-    </div>
-    <span class="hint">@T["Additional module script urls."]</span>
-</div>
-
-<div class="mb-3">
-    <div class="w-md-75 w-xl-50 pe-md-3">
-        <label asp-for="ScriptUrls" class="form-label">@T["Script Urls"]</label>
-        <textarea asp-for="ScriptUrls" rows="2" class="form-control"></textarea>
-    </div>
-    <span class="hint">@T["Additional script urls."]</span>
-</div>
-
-<div class="mb-3">
-    <div class="w-md-75 w-xl-50 pe-md-3">
-        <label asp-for="StyleUrls" class="form-label">@T["Style Urls"]</label>
-        <textarea asp-for="StyleUrls" rows="2" class="form-control"></textarea>
-    </div>
-    <span class="hint">@T["Additional style urls."]</span>
-</div>
-
 @{
     var Resources = new[] { new Resource() };
 }
@@ -58,10 +18,12 @@
     @Html.EditorFor(_ => Resources)
 </template>
 
-<div class="resources">
-    @Html.EditorFor(m => m.Resources)
+<div class="mb-3">
+    <label asp-for="Resources" class="form-label">@T["Resources"]</label>
+    <div class="resources">
+        @Html.EditorFor(m => m.Resources)
+    </div>
 </div>
-
 
 <style>
     .form-select.auto-width {

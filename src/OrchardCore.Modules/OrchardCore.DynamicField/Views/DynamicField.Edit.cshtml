@@ -25,7 +25,7 @@
     {
         if (resource.Type == ResourceType.Script)
         {
-            <script depends-on="parent-component" at="@resource.At">
+            <script depends-on="parent-component" at="@resource.At" type="@(resource.IsModule == Boolean.TrueString ? "module" : null)">
                 @Html.Raw(resource.Src)
             </script>
         }
@@ -40,7 +40,7 @@
     {
         if (resource.Type == ResourceType.Script)
         {
-            <script depends-on="parent-component" at="@resource.At" asp-src="@resource.Src"></script>
+            <script depends-on="parent-component" at="@resource.At" asp-src="@resource.Src" type="@(resource.IsModule == Boolean.TrueString ? "module" : null)"></script>
         }
         else if (resource.Type == ResourceType.Style)
         {
@@ -49,40 +49,3 @@
     }
 }
 
-@if (!string.IsNullOrEmpty(settings.ScriptUrls))
-{
-    foreach (var scriptUrl in settings.ScriptUrls.Split("\n"))
-    {
-        <script depends-on="parent-component" at="Foot" asp-src="@scriptUrl"></script>
-    }
-}
-
-@if (!string.IsNullOrEmpty(settings.ScriptModuleUrls))
-{
-    foreach (var scriptUrl in settings.ScriptModuleUrls.Split("\n"))
-    {
-        <script depends-on="parent-component" at="Foot" asp-src="@scriptUrl" type="module"></script>
-    }
-}
-
-@if (!string.IsNullOrEmpty(settings.StyleUrls))
-{
-    foreach (var styleUrl in settings.StyleUrls.Split("\n"))
-    {
-        <style at="Head" asp-src="@styleUrl"></style>
-    }
-}
-
-@if (!string.IsNullOrEmpty(settings.InlineScript))
-{
-    <script at="Foot" depends-on="parent-component">
-        @Html.Raw(settings.InlineScript)
-    </script>
-}
-
-@if (!string.IsNullOrEmpty(settings.InlineStyle))
-{
-    <style at="Head">
-        @Html.Raw(settings.InlineStyle)
-    </style>
-}

@@ -13,11 +13,6 @@ public sealed class DynamicFieldSettingsDisplayDriver : ContentPartFieldDefiniti
         {
             var settings = partFieldDefinition.GetSettings<DynamicFieldSettings>();
             model.Code = settings.Code;
-            model.InlineStyle = settings.InlineStyle;
-            model.InlineScript = settings.InlineScript;
-            model.ScriptUrls = settings.ScriptUrls;
-            model.StyleUrls = settings.StyleUrls;
-            model.ScriptModuleUrls = settings.ScriptModuleUrls;
             model.Resources = settings.Resources;
         }).Location("Content");
     }
@@ -25,7 +20,6 @@ public sealed class DynamicFieldSettingsDisplayDriver : ContentPartFieldDefiniti
     public override async Task<IDisplayResult> UpdateAsync(ContentPartFieldDefinition partFieldDefinition, UpdatePartFieldEditorContext context)
     {
         var model = new DynamicFieldSettings();
-
         await context.Updater.TryUpdateModelAsync(model, Prefix);
 
         context.Builder.WithSettings(model);
