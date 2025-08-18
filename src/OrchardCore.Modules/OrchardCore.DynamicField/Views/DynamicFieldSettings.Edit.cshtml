@@ -50,20 +50,31 @@
     <span class="hint">@T["Additional style urls."]</span>
 </div>
 
-
-@for (int i = 0; i < Model.Resources.Count; i++)
-{
-    <div class="input-group mb-3">
-        <select class="form-select auto-width" id="type" asp-for="@Model.Resources[i].Type">
+<div class="resources">
+    @for (int i = 0; i < Model.Resources.Count; i++)
+    {
+    <div class="input-group mb-3 resource">
+        <select class="form-select auto-width" asp-for="@Model.Resources[i].Type">
             <option value="@ResourceType.Script" selected>Script</option>
             <option value="@ResourceType.Style">Style</option>
         </select>
 
-        <select class="form-select auto-width" id="at" asp-for="@Model.Resources[i].At">
+        <select class="form-select auto-width" asp-for="@Model.Resources[i].At">
             <option value="@ResourceLocation.Foot" selected>Foot</option>
             <option value="@ResourceLocation.Head">Head</option>
         </select>
 
+        <select class="form-select auto-width" asp-for="@Model.Resources[i].IsModule">
+            <option value="@Boolean.FalseString" selected>Non-module</option>
+            <option value="@Boolean.TrueString">Module</option>
+        </select>
+
+        <select class="form-select auto-width" asp-for="@Model.Resources[i].IsInline" disabled>
+            <option value="@Boolean.FalseString" selected>External</option>
+            <option value="@Boolean.TrueString">Inline</option>
+        </select>
+
+@*      
         <div class="input-group-text">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" asp-for="@Model.Resources[i].IsModule">
@@ -75,17 +86,25 @@
 
         <div class="input-group-text">
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="checkInline" asp-for="@Model.Resources[i].IsInline" disabled>
+                <input class="form-check-input" type="checkbox" asp-for="@Model.Resources[i].IsInline" disabled>
                 <label class="form-check-label" asp-for="@Model.Resources[i].IsInline">
                     Inline
                 </label>
             </div>
+        </div> 
+*@
+
+        <input type="text" class="form-control" aria-label="Resource Url" asp-for="@Model.Resources[i].Src">
+
+        <div class="input-group-text">
+            <button class="btn btn-outline-secondary btn-sm up" type="button" onclick="move(this, -1)"><i class="fa-solid fa-up-long"></i></button>
+            <button class="btn btn-outline-secondary btn-sm down" type="button" onclick="move(this, 1)"><i class="fa-solid fa-down-long"></i></button>
+            <button class="btn btn-outline-secondary btn-sm remove" type="button" onclick="removeResource(this)"><i class="fa-solid fa-trash"></i></button>
+            <button class="btn btn-outline-secondary btn-sm add" type="button" onclick="addResource()"><i class="fa-solid fa-plus"></i></button>
         </div>
-
-        <input type="text" class="form-control" aria-label="Text input with checkbox" asp-for="@Model.Resources[i].Src">
     </div>
-}
-
+    }
+</div>
 
 
 <style>
@@ -94,4 +113,77 @@
         max-width: fit-content;
         display: inline-block;
     }
+
+    .resources .resource button.add {
+        display: none;
+    }
+
+    .resources .resource:last-child button.add {
+        display: initial;
+    }
+
+    .resources:has(> :only-child) button.remove {
+        display: none;
+    }
+
+    .resources .resource:last-child button.down, .resources .resource:first-child button.up {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
 </style>
+
+<script>
+    function reindex(resource, index) {
+        const inputs = resource.querySelectorAll('input, select');
+        inputs.forEach((input) => {
+            // name -> /(?:\[(\d+)\])/
+            // id   -> /(?:_(\d+)_)/
+            input.name = input.name.replace(/(?:\[(\d+)\])/, (match, offset) => `[${index}]`);
+            input.id = input.id.replace(/(?:_(\d+)_)/, (match, offset) => `_${index}_`);
+        });
+    }
+
+    function move(button, dir) {
+        const resourceToMove = button.closest('.resource');
+        const itemsContainer = document.querySelector('div.resources');
+        const children = Array.from(itemsContainer.children);
+
+        const idx = children.indexOf(resourceToMove);
+
+        if (dir == -1 && idx > 0) {
+            itemsContainer.insertBefore(resourceToMove, children[idx + dir]);
+        } else if (dir == 1 && idx < children.length - 1) {
+            itemsContainer.insertBefore(children[idx + dir], resourceToMove);
+        }
+
+        //todo
+        document.querySelectorAll('div.resources > .resource').forEach((resource, index) => {
+            reindex(resource, index);
+        });
+    }
+
+    function removeResource(button) {
+        const resourceToRemove = button.closest('.resource');
+        const resources = resourceToRemove.parentElement;
+        resources.removeChild(resourceToRemove);
+        for (let index = 0; index < resources.children.length; index++) {
+            reindex(resources.children[index], index);
+        }
+    }
+
+    function addResource() {
+        const first = document.querySelector('div.resources > :first-child');
+        const cloned = first.cloneNode(true);
+
+        const itemsContainer = document.querySelector('div.resources');
+        const items = document.querySelectorAll('div.resources > .resource');
+
+        items.forEach((resource, index) => {
+            reindex(resource, index);
+        });
+
+        reindex(cloned, items.length);
+        itemsContainer.appendChild(cloned);
+    }
+</script>

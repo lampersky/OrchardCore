@@ -24,6 +24,6 @@ public class Resource
     public ResourceType Type { get; set; } = ResourceType.Script;
     public string Src { get; set; }
     public ResourceLocation At { get; set; } = ResourceLocation.Foot;
-    public bool IsModule { get; set; }
-    public bool IsInline { get; set; }
+    public string IsModule { get; set; }
+    public string IsInline { get; set; }
 }

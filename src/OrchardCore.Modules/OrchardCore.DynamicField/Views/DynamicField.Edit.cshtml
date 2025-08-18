@@ -21,7 +21,7 @@
 
 @foreach (var resource in settings.Resources)
 {
-    if (resource.IsInline)
+    if (resource.IsInline == Boolean.TrueString)
     {
         if (resource.Type == ResourceType.Script)
         {
