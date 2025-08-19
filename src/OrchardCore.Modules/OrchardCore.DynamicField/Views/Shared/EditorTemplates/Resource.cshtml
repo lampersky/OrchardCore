@@ -2,10 +2,6 @@
 @using OrchardCore.ResourceManagement
 @model OrchardCore.DynamicField.Settings.Resource
 
-
-@{
-}
-
 <div class="input-group mb-3 resource">
     <select class="form-select auto-width" asp-for="Type">
         <option value="@ResourceType.Script" selected>Script</option>
@@ -22,32 +18,32 @@
         <option value="@Boolean.TrueString">Module</option>
     </select>
 
-    <select class="form-select auto-width" asp-for="IsInline">
+    <select class="form-select auto-width" asp-for="IsInline" onchange="toggleEditor(this)">
         <option value="@Boolean.FalseString" selected>External</option>
         <option value="@Boolean.TrueString">Inline</option>
     </select>
 
-    @*      
-        <div class="input-group-text">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" asp-for="@Model.IsModule">
-                <label class="form-check-label" asp-for="@Model.Resources[i].IsModule">
-                    Module
-                </label>
-            </div>
+@*      
+    <div class="input-group-text">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="@Model.IsModule">
+            <label class="form-check-label" asp-for="@Model.IsModule">
+                Module
+            </label>
         </div>
+    </div>
 
-        <div class="input-group-text">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" asp-for="@Model.IsInline" disabled>
-                <label class="form-check-label" asp-for="@Model.Resources[i].IsInline">
-                    Inline
-                </label>
-            </div>
-        </div> 
+    <div class="input-group-text">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" asp-for="@Model.IsInline" disabled>
+            <label class="form-check-label" asp-for="@Model.IsInline">
+                Inline
+            </label>
+        </div>
+    </div> 
 *@
 
-    <input type="text" class="form-control" aria-label="Resource Url" asp-for="Src">
+    <textarea class="form-control @(Model.IsInline == Boolean.TrueString ? "" : "single-line-textarea")" onkeydown="preventEnter(this, event)" asp-for="Src" aria-label="Inline code"></textarea>
 
     <div class="input-group-text">
         <button class="btn btn-outline-secondary btn-sm up" type="button" onclick="move(this, -1)"><i class="fa-solid fa-up-long"></i></button>
