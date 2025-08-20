@@ -14,24 +14,34 @@ public static class ExpandoObjectExtensions
         return result;
     }
 
-    private static void FlattenExpando(IDictionary<string, object> expando, Dictionary<string, object> result, string parentKey)
+    private static void FlattenExpando(object value, Dictionary<string, object> result, string parentKey)
     {
-        foreach (var kvp in expando)
+        switch (value)
         {
-            string key = parentKey == null ? kvp.Key : $"{parentKey}.{kvp.Key}";
+            case IDictionary<string, object> dict:
+                foreach (var kvp in dict)
+                {
+                    string key = parentKey == null ? kvp.Key : $"{parentKey}.{kvp.Key}";
+                    FlattenExpando(kvp.Value, result, key);
+                }
+                break;
 
-            if (kvp.Value is ExpandoObject nested)
-            {
-                FlattenExpando((IDictionary<string, object>)nested, result, key);
-            }
-            else if (kvp.Value is IDictionary<string, object> nestedDict)
-            {
-                FlattenExpando(nestedDict, result, key);
-            }
-            else
-            {
-                result[key] = kvp.Value;
-            }
+            case IEnumerable<object> list:
+                int index = 0;
+                foreach (var item in list)
+                {
+                    string key = $"{parentKey}[{index}]";
+                    FlattenExpando(item, result, key);
+                    index++;
+                }
+                break;
+
+            default:
+                if (parentKey != null)
+                {
+                    result[parentKey] = value;
+                }
+                break;
         }
     }
 }

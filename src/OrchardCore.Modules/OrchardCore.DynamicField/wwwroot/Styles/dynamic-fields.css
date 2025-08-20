@@ -1,0 +1,30 @@
+.resources .resource button.add {
+    display: none;
+}
+
+.resources .resource:last-child button.add {
+    display: initial;
+}
+
+.resources:has(> :only-child) button.remove {
+    display: none;
+}
+
+.resources .resource:last-child button.down, .resources .resource:first-child button.up {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.single-line-textarea {
+    overflow: hidden;
+    resize: none;
+    height: auto;
+    white-space: nowrap;
+}

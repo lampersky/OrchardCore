@@ -8,6 +8,12 @@ using YesSql.Indexes;
 
 namespace OrchardCore.DynamicField.Indexing.SQL;
 
+public class DynamicFieldIndex : TextFieldIndex
+{
+    public string Path { get; set; }
+    public string Type { get; set; }
+}
+
 public class DynamicFieldIndexProvider : ContentFieldIndexProvider
 {
     private readonly IServiceProvider _serviceProvider;
@@ -21,7 +27,7 @@ public class DynamicFieldIndexProvider : ContentFieldIndexProvider
 
     public override void Describe(DescribeContext<ContentItem> context)
     {
-        context.For<TextFieldIndex>()
+        context.For<DynamicFieldIndex>()
             .Map(async contentItem =>
             {
                 // Remove index records of soft deleted items.
@@ -39,7 +45,7 @@ public class DynamicFieldIndexProvider : ContentFieldIndexProvider
                 // Lazy initialization because of ISession cyclic dependency
                 _contentDefinitionManager ??= _serviceProvider.GetRequiredService<IContentDefinitionManager>();
 
-                // Search for TextField
+                // Search for DynamicField
                 var contentTypeDefinition = await _contentDefinitionManager.GetTypeDefinitionAsync(contentItem.ContentType);
 
                 // This can occur when content items become orphaned, particularly layer widgets when a layer is removed, before its widgets have been unpublished.
@@ -53,7 +59,7 @@ public class DynamicFieldIndexProvider : ContentFieldIndexProvider
                     .Parts.SelectMany(x => x.PartDefinition.Fields.Where(f => f.FieldDefinition.Name == nameof(Fields.DynamicField)))
                     .ToArray();
 
-                // This type doesn't have any TextField, ignore it
+                // This type doesn't have any DynamicField, ignore it
                 if (fieldDefinitions.Length == 0)
                 {
                     _ignoredTypes.Add(contentItem.ContentType);
@@ -62,11 +68,13 @@ public class DynamicFieldIndexProvider : ContentFieldIndexProvider
 
                 return fieldDefinitions
                     .GetContentFields<Fields.DynamicField>(contentItem)
-                    .Select(pair => {
+                    .SelectMany(pair => {
 
                         var flattened = pair.Field.Value.Flatten();
 
                         var grouped = flattened.GroupBy(item => item.Value.GetType());
+
+                        var result = new List<DynamicFieldIndex> { };
 
                         foreach (var group in grouped)
                         {
@@ -75,23 +83,25 @@ public class DynamicFieldIndexProvider : ContentFieldIndexProvider
                             {
                                 var path = item.Key;
                                 var value = item.Value;
+                                result.Add(
+                                    new DynamicFieldIndex
+                                    {
+                                        Latest = contentItem.Latest,
+                                        Published = contentItem.Published,
+                                        ContentItemId = contentItem.ContentItemId,
+                                        ContentItemVersionId = contentItem.ContentItemVersionId,
+                                        ContentType = contentItem.ContentType,
+                                        ContentPart = pair.Definition.ContentTypePartDefinition.Name,
+                                        ContentField = pair.Definition.Name,
+                                        Type = type.ToString(),
+                                        Path = path,
+                                        Text = value.ToString()?[..Math.Min(value.ToString().Length, TextFieldIndex.MaxTextSize)],
+                                        BigText = value.ToString(),
+                                    });
                             }
                         }
 
-                        return (TextFieldIndex)null;
-
-                        //return new TextFieldIndex
-                        //{
-                        //    Latest = contentItem.Latest,
-                        //    Published = contentItem.Published,
-                        //    ContentItemId = contentItem.ContentItemId,
-                        //    ContentItemVersionId = contentItem.ContentItemVersionId,
-                        //    ContentType = contentItem.ContentType,
-                        //    ContentPart = pair.Definition.ContentTypePartDefinition.Name,
-                        //    ContentField = pair.Definition.Name,
-                        //    Text = "todo", //pair.Field.Text?[..Math.Min(pair.Field.Text.Length, TextFieldIndex.MaxTextSize)],
-                        //    BigText = "todo" //pair.Field.Text,
-                        //};
+                        return result;
                     });
             });
     }
