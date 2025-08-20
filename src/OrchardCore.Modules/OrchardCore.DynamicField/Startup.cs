@@ -7,6 +7,7 @@ using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentTypes.Editors;
 using OrchardCore.DynamicField.Drivers;
 using OrchardCore.DynamicField.Settings;
+using OrchardCore.DynamicField.TagHelpers;
 using OrchardCore.DynamicField.ViewModels;
 using OrchardCore.Modules;
 
@@ -25,6 +26,9 @@ public class Startup : StartupBase
             o.MemberAccessStrategy.Register<Fields.DynamicField>();
             o.MemberAccessStrategy.Register<DisplayDynamicFieldViewModel>();
         });
+
+        services.AddTagHelpers<ExtendedScriptTagHelper>();
+        services.AddTagHelpers<CustomAspForHelper>();
     }
 
     public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider)

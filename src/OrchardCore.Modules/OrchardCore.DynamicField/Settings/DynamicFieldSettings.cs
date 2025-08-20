@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OrchardCore.ResourceManagement;
 
 namespace OrchardCore.DynamicField.Settings;
@@ -16,9 +18,33 @@ public enum ResourceType
 
 public class Resource
 {
+    public Resource()
+    {
+        IsModule = false;
+        IsInline = false;
+        IsDeferred = false;
+        IsAsync = false;
+    }
+
     public ResourceType Type { get; set; } = ResourceType.Script;
     public string Src { get; set; }
     public ResourceLocation At { get; set; } = ResourceLocation.Foot;
-    public string IsModule { get; set; }
-    public string IsInline { get; set; }
+
+    [BindingBehavior(BindingBehavior.Optional)]
+    [DefaultValue(false)]
+    public bool IsModule { get; set; }
+
+    [BindingBehavior(BindingBehavior.Optional)]
+    [DefaultValue(false)]
+    public bool IsInline { get; set; }
+
+    [BindingBehavior(BindingBehavior.Optional)]
+    [DefaultValue(false)]
+    public bool IsDeferred { get; set; }
+
+    [BindingBehavior(BindingBehavior.Optional)]
+    [DefaultValue(false)]
+    public bool IsAsync { get; set; }
+
+    public string ScriptType => IsModule ? "module" : "";
 }

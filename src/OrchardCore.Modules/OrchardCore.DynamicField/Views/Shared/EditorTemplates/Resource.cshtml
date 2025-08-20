@@ -2,48 +2,76 @@
 @using OrchardCore.ResourceManagement
 @model OrchardCore.DynamicField.Settings.Resource
 
-<div class="input-group mb-3 resource">
-    <select class="form-select auto-width" asp-for="Type">
-        <option value="@ResourceType.Script" selected>Script</option>
-        <option value="@ResourceType.Style">Style</option>
-    </select>
+<div class="dropdown input-group mb-3 resource">
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+        @T["Script"]
+    </button>
 
-    <select class="form-select auto-width" asp-for="At">
-        <option value="@ResourceLocation.Foot" selected>Foot</option>
-        <option value="@ResourceLocation.Head">Head</option>
-    </select>
+    <div class="dropdown-menu">
+        <div class="mb-1 px-3">
+            <h6 class="dropdown-header">Resource type</h6>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="Type" id="@Html.IdFor(m => m.Type)_script" value="@ResourceType.Script">
+                <label class="form-check-label" for="@Html.IdFor(m => m.Type)_script">
+                    @T["Script"]
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="Type" id="@Html.IdFor(m => m.Type)_style" value="@ResourceType.Style">
+                <label class="form-check-label" for="@Html.IdFor(m => m.Type)_style">
+                    @T["Style"]
+                </label>
+            </div>
+        </div>
 
-    <select class="form-select auto-width" asp-for="IsModule">
-        <option value="@Boolean.FalseString" selected>Non-module</option>
-        <option value="@Boolean.TrueString">Module</option>
-    </select>
+        <hr class="dropdown-divider">
 
-    <select class="form-select auto-width" asp-for="IsInline" onchange="toggleEditor(this)">
-        <option value="@Boolean.FalseString" selected>External</option>
-        <option value="@Boolean.TrueString">Inline</option>
-    </select>
+        <div class="mb-1 px-3">
+            <h6 class="dropdown-header">Resource placement</h6>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="At" id="@Html.IdFor(m => m.Type)_foot" value="@ResourceLocation.Foot">
+                <label class="form-check-label" for="@Html.IdFor(m => m.Type)_foot">
+                    @T["Foot"]
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" asp-for="At" id="@Html.IdFor(m => m.Type)_head" value="@ResourceLocation.Head">
+                <label class="form-check-label" for="@Html.IdFor(m => m.Type)_head">
+                    @T["Head"]
+                </label>
+            </div>
+        </div>
 
-@*      
-    <div class="input-group-text">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" asp-for="@Model.IsModule">
-            <label class="form-check-label" asp-for="@Model.IsModule">
-                Module
-            </label>
+        <hr class="dropdown-divider">
+
+        <div class="mb-1 px-3">
+            <h6 class="dropdown-header">Resource config</h6>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="@Html.IdFor(m => m.IsInline)" name="@Html.NameFor(m => m.IsInline)" @(Model.IsInline ? "checked" : "") onclick="toggleEditor(this)" value="true" />
+                <label class="form-check-label" for="@Html.IdFor(m => m.IsInline)"> @T["Inline"] </label>
+            </div>
+        </div>
+        <div class="mb-1 px-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="@Html.IdFor(m => m.IsModule)" name="@Html.NameFor(m => m.IsModule)" @(Model.IsModule ? "checked" : "") value="true" />
+                <label class="form-check-label" for="@Html.IdFor(m => m.IsModule)"> @T["Module"] </label>
+            </div>
+        </div>
+        <div class="mb-1 px-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="@Html.IdFor(m => m.IsAsync)" name="@Html.NameFor(m => m.IsAsync)" @(Model.IsAsync ? "checked" : "") value="true" />
+                <label class="form-check-label" for="@Html.IdFor(m => m.IsAsync)"> @T["Async"] </label>
+            </div>
+        </div>
+        <div class="mb-1 px-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="@Html.IdFor(m => m.IsDeferred)" name="@Html.NameFor(m => m.IsDeferred)" @(Model.IsDeferred ? "checked" : "") value="true" />
+                <label class="form-check-label" for="@Html.IdFor(m => m.IsDeferred)"> @T["Defer"] </label>
+            </div>
         </div>
     </div>
 
-    <div class="input-group-text">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" asp-for="@Model.IsInline" disabled>
-            <label class="form-check-label" asp-for="@Model.IsInline">
-                Inline
-            </label>
-        </div>
-    </div> 
-*@
-
-    <textarea class="form-control @(Model.IsInline == Boolean.TrueString ? "" : "single-line-textarea")" onkeydown="preventEnter(this, event)" asp-for="Src" aria-label="Inline code"></textarea>
+    <textarea class="form-control @(Model.IsInline ? "" : "single-line-textarea")" onkeydown="preventEnter(this, event)" asp-for="Src" aria-label="Inline code"></textarea>
 
     <div class="input-group-text">
         <button class="btn btn-outline-secondary btn-sm up" type="button" onclick="move(this, -1)"><i class="fa-solid fa-up-long"></i></button>

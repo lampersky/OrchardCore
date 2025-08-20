@@ -20,7 +20,7 @@ public sealed class DynamicFieldSettingsDisplayDriver : ContentPartFieldDefiniti
     public override async Task<IDisplayResult> UpdateAsync(ContentPartFieldDefinition partFieldDefinition, UpdatePartFieldEditorContext context)
     {
         var model = new DynamicFieldSettings();
-        await context.Updater.TryUpdateModelAsync(model, Prefix);
+        var success = await context.Updater.TryUpdateModelAsync(model, Prefix);
 
         context.Builder.WithSettings(model);
 

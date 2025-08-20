@@ -19,19 +19,13 @@
 </template>
 
 <div class="mb-3">
-    <label asp-for="Resources" class="form-label">@T["Resources"]</label>
+    <label class="form-label">@T["Resources"]</label>
     <div class="resources">
         @Html.EditorFor(m => m.Resources)
     </div>
 </div>
 
 <style>
-    .form-select.auto-width {
-        width: auto;
-        max-width: fit-content;
-        display: inline-block;
-    }
-
     .resources .resource button.add {
         display: none;
     }
@@ -59,8 +53,8 @@
 </style>
 
 <script>
-    function toggleEditor(select) {
-        select.parentElement.querySelector('textarea').classList.toggle('single-line-textarea');
+    function toggleEditor(input) {
+        input.closest('.resource').querySelector('textarea').classList.toggle('single-line-textarea');
     }
 
     function preventEnter(textarea, event) {
@@ -70,12 +64,17 @@
     }
 
     function reindex(resource, index) {
-        const inputs = resource.querySelectorAll('input, select');
-        inputs.forEach((input) => {
+        const elements = resource.querySelectorAll('input, select, textarea, label');
+        elements.forEach((element) => {
             // name -> /(?:\[(\d+)\])/
             // id   -> /(?:_(\d+)_)/
-            input.name = input.name.replace(/(?:\[(\d+)\])/, (match, offset) => `[${index}]`);
-            input.id = input.id.replace(/(?:_(\d+)_)/, (match, offset) => `_${index}_`);
+            if (element.hasAttribute('for')) {
+                const newFor = element.getAttribute('for').replace(/(?:_(\d+)_)/, (match, offset) => `_${index}_`);
+                element.setAttribute('for', newFor);
+            } else {
+                element.name = element.name.replace(/(?:\[(\d+)\])/, (match, offset) => `[${index}]`);
+                element.id = element.id.replace(/(?:_(\d+)_)/, (match, offset) => `_${index}_`);
+            }
         });
     }
 
@@ -108,11 +107,13 @@
     }
 
     function addResource() {
-        //const first = document.querySelector('div.resources > :first-child');
-        //const cloned = first.cloneNode(true);
         const template = document.getElementById('resource-template');
-        console.log(template);
         const cloned = template.content.cloneNode(true);
+
+        let dropdownToggle = cloned.querySelector('[data-bs-toggle="dropdown"]');
+        new bootstrap.Dropdown(dropdownToggle, {
+            autoClose: 'outside'
+        });
 
         const itemsContainer = document.querySelector('div.resources');
         const items = document.querySelectorAll('div.resources > .resource');

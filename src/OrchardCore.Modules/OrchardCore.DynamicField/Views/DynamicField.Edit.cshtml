@@ -21,11 +21,11 @@
 
 @foreach (var resource in settings.Resources)
 {
-    if (resource.IsInline == Boolean.TrueString)
+    if (resource.IsInline)
     {
         if (resource.Type == ResourceType.Script)
         {
-            <script depends-on="parent-component" at="@resource.At" type="@(resource.IsModule == Boolean.TrueString ? "module" : null)">
+            <script depends-on="parent-component" at="@resource.At" type="@resource.ScriptType" defer="resource.IsDeferred" async="resource.IsAsync">
                 @Html.Raw(resource.Src)
             </script>
         }
@@ -40,7 +40,7 @@
     {
         if (resource.Type == ResourceType.Script)
         {
-            <script depends-on="parent-component" at="@resource.At" asp-src="@resource.Src" type="@(resource.IsModule == Boolean.TrueString ? "module" : null)"></script>
+            <script depends-on="parent-component" at="@resource.At" asp-src="@resource.Src" type="@resource.ScriptType" defer="resource.IsDeferred" async="resource.IsAsync"></script>
         }
         else if (resource.Type == ResourceType.Style)
         {
