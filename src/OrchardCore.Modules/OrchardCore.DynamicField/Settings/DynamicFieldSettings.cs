@@ -47,4 +47,6 @@ public class Resource
     public bool IsAsync { get; set; }
 
     public string ScriptType => IsModule ? "module" : "";
+    public bool IsScript => Type == ResourceType.Script;
+    public bool IsStyle => Type == ResourceType.Style;
 }

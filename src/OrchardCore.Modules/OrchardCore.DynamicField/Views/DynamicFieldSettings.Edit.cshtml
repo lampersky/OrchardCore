@@ -44,6 +44,12 @@
         cursor: not-allowed;
     }
 
+    .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+
     .single-line-textarea {
         overflow: hidden;
         resize: none;
@@ -61,6 +67,17 @@
         if (textarea.classList.contains('single-line-textarea') && event.key === 'Enter') {
             event.preventDefault();
         }
+    }
+
+    function onResourceTypeChange(input) {
+        console.log(input);
+        input.closest('.dropdown-menu').querySelectorAll('.only-for-script').forEach(element => {
+            if (input.value == "Script") {
+                element.classList.remove('disabled');
+            } else {
+                element.classList.add('disabled');
+            }
+        });
     }
 
     function reindex(resource, index) {
