@@ -70,9 +70,8 @@
     }
 
     function onResourceTypeChange(input) {
-        console.log(input);
         input.closest('.dropdown-menu').querySelectorAll('.only-for-script').forEach(element => {
-            if (input.value == "Script") {
+            if (input.value == "@ResourceType.Script") {
                 element.classList.remove('disabled');
             } else {
                 element.classList.add('disabled');

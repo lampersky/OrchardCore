@@ -1,11 +1,30 @@
 using OrchardCore.Modules.Manifest;
 
 [assembly: Module(
-    Name = "OrchardCore.DynamicField",
-    Author = "The Orchard Core Team",
-    Website = "https://orchardcore.net",
-    Version = "0.0.1",
-    Description = "OrchardCore.DynamicField",
+    Name = "Dynamic Fields",
+    Author = "Lampersky",
+    Website = ManifestConstants.OrchardCoreWebsite,
+    Version = ManifestConstants.OrchardCoreVersion,
+    Category = "Content Management"
+)]
+
+[assembly: Feature(
+    Id = "OrchardCore.DynamicField",
+    Name = "Dynamic Fields",
     Category = "Content Management",
-    Dependencies = ["OrchardCore.ContentTypes"]
+    Description = "Dynamic Fields module adds dynamic fields to be used with your custom types.",
+    Dependencies = ["OrchardCore.ContentTypes", "OrchardCore.Shortcodes"]
+)]
+
+[assembly: Feature(
+    Id = "OrchardCore.DynamicField.Indexing.SQL",
+    Name = "Dynamic Fields Indexing (SQL)",
+    Category = "Content Management",
+    Description = "Dynamic Fields Indexing module adds database indexing for user dynamic fields.",
+    Dependencies =
+    [
+        "OrchardCore.DynamicField",
+        "OrchardCore.ContentFields",
+        "OrchardCore.ContentFields.Indexing.SQL"
+    ]
 )]
