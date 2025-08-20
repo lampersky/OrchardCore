@@ -31,7 +31,7 @@
         }
         else if (resource.Type == ResourceType.Style)
         {
-            <style at="@resource.At" asp-src="@resource.Src">
+            <style at="@resource.At">
                 @Html.Raw(resource.Src)
             </style>
         }

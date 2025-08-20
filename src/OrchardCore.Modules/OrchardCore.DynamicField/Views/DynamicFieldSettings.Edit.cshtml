@@ -19,7 +19,7 @@
 </template>
 
 <div class="mb-3">
-    <label class="form-label">@T["Resources"]</label>
+    <label class="form-label">@T["Resources"] <a href="#" onclick="addResource()"><i class="fa fa-plus-circle" aria-hidden="true"></i></a></label>
     <div class="resources">
         @Html.EditorFor(m => m.Resources)
     </div>
