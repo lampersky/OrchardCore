@@ -1,4 +1,3 @@
-using System;
 using System.Dynamic;
 using System.Text.Json;
 using Microsoft.Extensions.Localization;
@@ -35,7 +34,6 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Fields
     {
         return Initialize<EditDynamicFieldViewModel>(GetEditorShapeType(context), model =>
         {
-            // var settings = context.PartFieldDefinition.GetSettings<DynamicFieldSettings>();
             model.Value = JsonSerializer.Serialize(field.Value);
             model.Field = field;
             model.Part = context.ContentPart;
@@ -46,16 +44,8 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Fields
     public override async Task<IDisplayResult> UpdateAsync(Fields.DynamicField field, UpdateFieldEditorContext context)
     {
         var model = new EditDynamicFieldViewModel();
-
         await context.Updater.TryUpdateModelAsync(model, Prefix, f => f.Value);
-        // var settings = context.PartFieldDefinition.GetSettings<DynamicFieldSettings>();
-
         field.Value = JsonSerializer.Deserialize<ExpandoObject>(model.Value);
-
-        // if (settings.Required && field.Value == null)
-        // {
-        //     context.Updater.ModelState.AddModelError(Prefix, nameof(field.Value), S["A value is required for {0}.", context.PartFieldDefinition.DisplayName()]);
-        // }
 
         return Edit(field, context);
     }

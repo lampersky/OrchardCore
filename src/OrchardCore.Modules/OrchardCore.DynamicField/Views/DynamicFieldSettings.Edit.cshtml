@@ -2,6 +2,12 @@
 @using OrchardCore.ResourceManagement
 @model OrchardCore.DynamicField.Settings.DynamicFieldSettings
 
+@{
+    var searchUrl = Url.RouteUrl(new { area = "OrchardCore.DynamicField", controller = "DynamicFieldsAdmin", action = "SearchDynamicFields" });
+
+    var asdfg = searchUrl;
+}
+
 <div class="mb-3">
     <div class="w-md-75 w-xl-50 pe-md-3">
         <label asp-for="Code" class="form-label">@T["Code"]</label>

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OrchardCore.ResourceManagement;
 
@@ -46,7 +47,10 @@ public class Resource
     [DefaultValue(false)]
     public bool IsAsync { get; set; }
 
+    [JsonIgnore]
     public string ScriptType => IsModule ? "module" : "";
+    [JsonIgnore]
     public bool IsScript => Type == ResourceType.Script;
+    [JsonIgnore]
     public bool IsStyle => Type == ResourceType.Style;
 }
