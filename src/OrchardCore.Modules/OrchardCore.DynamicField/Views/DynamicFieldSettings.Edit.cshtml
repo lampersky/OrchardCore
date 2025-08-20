@@ -4,8 +4,13 @@
 
 @{
     var searchUrl = Url.RouteUrl(new { area = "OrchardCore.DynamicField", controller = "DynamicFieldsAdmin", action = "SearchDynamicFields" });
+}
 
-    var asdfg = searchUrl;
+@if (Context.Request.Query.ContainsKey("contentType") && Context.Request.Query.ContainsKey("contentField"))
+{
+    <div class="alert alert-warning" role="alert">
+        DynamicField configuration was taken from {@Context.Request.Query["contentType"]} {@Context.Request.Query["contentField"]}
+    </div>
 }
 
 <div class="mb-3">
