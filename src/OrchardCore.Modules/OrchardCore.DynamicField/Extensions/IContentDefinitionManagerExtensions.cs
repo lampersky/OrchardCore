@@ -1,9 +1,10 @@
 using OrchardCore.ContentManagement.Metadata;
+using OrchardCore.ContentManagement.Metadata.Models;
 
 namespace OrchardCore.DynamicField.Extensions;
 internal static class IContentDefinitionManagerExtensions
 {
-    public static async Task<Dictionary<string, Dictionary<string, TSettings>>> ListTypesWithFieldAndSettings<TField, TSettings>(this IContentDefinitionManager contentDefinitionManager) where TSettings : new()
+    public static async Task<Dictionary<string, List<ContentPartFieldDefinition>>> ListContentTypesWithFieldsOfType<TField>(this IContentDefinitionManager contentDefinitionManager)
     {
         var contentTypeDefinitions = await contentDefinitionManager.ListTypeDefinitionsAsync();
         var typesWithFieldAndSettings = contentTypeDefinitions
@@ -16,10 +17,24 @@ internal static class IContentDefinitionManagerExtensions
                 contentTypeDefinition => contentTypeDefinition.Name,
                 contentTypeDefinition => contentTypeDefinition.Parts
                     .SelectMany(x => x.PartDefinition.Fields.Where(f => f.FieldDefinition.Name == typeof(TField).Name))
-                    .ToDictionary(x => x.Name, x => x.GetSettings<TSettings>())
+                    .ToList()
             );
 
         return typesWithFieldAndSettings;
+    }
+
+    public static async Task<Dictionary<string, List<string>>> ListContentTypesWithFieldsNamesOfType<TField>(this IContentDefinitionManager contentDefinitionManager)
+    {
+        var typesWithField = await contentDefinitionManager.ListContentTypesWithFieldsOfType<TField>();
+
+        return typesWithField.ToDictionary(x => x.Key, x => x.Value.Select(y => y.Name).ToList());
+    }
+
+    public static async Task<Dictionary<string, Dictionary<string, TSettings>>> ListTypesWithFieldsNamesAndSettingsOfType<TField, TSettings>(this IContentDefinitionManager contentDefinitionManager) where TSettings : new()
+    {
+        var typesWithField = await contentDefinitionManager.ListContentTypesWithFieldsOfType<TField>();
+
+        return typesWithField.ToDictionary(x => x.Key, x => x.Value.ToDictionary(y => y.Name, y => y.GetSettings<TSettings>()));
     }
 
     public static async Task<TSettings> GetFieldSettings<TField, TSettings>(this IContentDefinitionManager contentDefinitionManager, string typeName, string fieldName) where TSettings : new()

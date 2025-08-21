@@ -9,7 +9,7 @@
 @if (Context.Request.Query.ContainsKey("contentType") && Context.Request.Query.ContainsKey("contentField"))
 {
     <div class="alert alert-warning" role="alert">
-        DynamicField configuration was taken from {@Context.Request.Query["contentType"]} {@Context.Request.Query["contentField"]}
+        @T["DynamicField configuration was copied from field '{1}' of content type '{0}'. Don't forget to save them.", Context.Request.Query["contentType"], Context.Request.Query["contentField"]]
     </div>
 }
 
