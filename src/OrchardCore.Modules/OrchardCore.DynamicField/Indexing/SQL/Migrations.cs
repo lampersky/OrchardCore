@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using OrchardCore.ContentManagement.Records;
 using OrchardCore.Data.Migration;
 using YesSql.Sql;
@@ -7,13 +6,6 @@ namespace OrchardCore.DynamicFields.Indexing.SQL;
 
 public sealed class Migrations : DataMigration
 {
-    private readonly ILogger _logger;
-
-    public Migrations(ILogger<Migrations> logger)
-    {
-        _logger = logger;
-    }
-
     public async Task<int> CreateAsync()
     {
         // NOTE: The Text Length has been decreased from 4000 characters to 768.

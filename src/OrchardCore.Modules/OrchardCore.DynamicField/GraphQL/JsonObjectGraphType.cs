@@ -22,7 +22,7 @@ public class JsonObjectGraphType : ScalarGraphType
             case GraphQLBooleanValue boolVal:
                 return boolVal.Value;
             case GraphQLObjectValue objVal:
-                var dict = new Dictionary<string, object?>();
+                var dict = new Dictionary<string, object>();
                 foreach (var field in objVal.Fields)
                 {
                     dict[field.Name.StringValue] = ParseLiteral(field.Value);
@@ -35,12 +35,12 @@ public class JsonObjectGraphType : ScalarGraphType
         }
     }
 
-    public override object? ParseValue(object? value)
+    public override object ParseValue(object value)
     {
         return value;
     }
 
-    public override object? Serialize(object? value)
+    public override object Serialize(object value)
     {
         return value;
     }
