@@ -8,10 +8,44 @@
 
 @if (Context.Request.Query.ContainsKey("contentType") && Context.Request.Query.ContainsKey("contentField"))
 {
-    <div class="alert alert-warning" role="alert">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
         @T["DynamicField configuration was copied from field '{1}' of content type '{0}'. Don't forget to save them.", Context.Request.Query["contentType"], Context.Request.Query["contentField"]]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+
+<button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Copy
+</button>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalScrollableTitle">@T["Copy exisiting configuration"]</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>@T["Choose the field configuration you want to copy from"]</div>
+                <div class="d-flex flex-column gap-6">
+                    <a href="?contentType=MyDynamicTestField&contentField=Test">MyDynamicTestField.Test</a>
+                    <a href="?contentType=MyDynamicTestField&contentField=WebComponent">MyDynamicTestField.WebComponent</a>
+                    <a href="?contentType=MyDynamicTestField&contentField=ColorPicker">MyDynamicTestField.ColorPicker</a>
+                    <a href="?contentType=MyDynamicTestField&contentField=AnotherTestField">MyDynamicTestField.AnotherTestField</a>
+                    <a href="?contentType=MyDynamicTestField&contentField=MidiPlayer">MyDynamicTestField.MidiPlayer</a>
+                    <a href="?contentType=MyDynamicTestField&contentField=Youtube">MyDynamicTestField.Youtube</a>
+                    <a href="?contentType=MyDynamicTestField&contentField=GrapeJS">MyDynamicTestField.GrapeJS</a>
+                    <a href="?contentType=MyDynamicTestField&contentField=GoogleMap">MyDynamicTestField.GoogleMap</a>
+                    <a href="?contentType=MyDynamicTestField&contentField=Leafletjs">MyDynamicTestField.Leafletjs</a>
+                    <a href="?contentType=MyDynamicTestField&contentField=RemoveMeSoon">MyDynamicTestField.RemoveMeSoon</a>
+                </div>
+                <div>@T["If you have already configured the dynamic field, your changes will be lost!"]</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@T["Close"]</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="mb-3">
     <div class="w-md-75 w-xl-50 pe-md-3">
@@ -31,7 +65,7 @@
 </template>
 
 <div class="mb-3">
-    <label class="form-label">@T["Resources"] <a href="#" onclick="addResource()"><i class="fa fa-plus-circle" aria-hidden="true"></i></a></label>
+    <label class="form-label">@T["Resources"] <a onclick="addResource()"><i class="fa fa-plus-circle" aria-hidden="true"></i></a></label>
     <div class="resources">
         @Html.EditorFor(m => m.Resources)
     </div>
