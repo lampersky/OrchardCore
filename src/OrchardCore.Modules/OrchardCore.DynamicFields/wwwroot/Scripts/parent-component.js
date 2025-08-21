@@ -14,40 +14,48 @@ class ParentComponent extends HTMLElement {
 
     connectedCallback() {
         this.addEventListener('value-changed', (event) => {
-            this.setAttribute('value', JSON.stringify(event.detail));
+            this.updateValue(event.detail);
         });
-        this.addEventListener('initial-value', (event) => {
-            event.target.dispatchEvent(new CustomEvent('value-changed', {
-                detail: JSON.parse(this.unescapeHTML(this.getAttribute('value'))),
-                composed: true,
-            }));
+        this.addEventListener('initial-value', async (event) => {
+            /* we could only notify event.target, but let's notify all children */
+            //event.target.dispatchEvent(new CustomEvent('value-changed', {
+            //    detail: JSON.parse(this.unescapeHTML(this.getAttribute('value'))),
+            //    composed: true,
+            //}));
+            await this.notifyChildren(this.getAttribute('value'));
         });
 
-        this.shadowRoot.querySelector('slot').addEventListener('slotchange', (event) => {
-            requestAnimationFrame(() => {
-                this.notifyChildren(this.getAttribute('value'));
-            });
+        this.shadowRoot.querySelector('slot').addEventListener('slotchange', async (event) => {
+            await this.notifyChildren(this.getAttribute('value'));
         });
     }
 
-    attributeChangedCallback(name, oldVal, newVal) {
+    async attributeChangedCallback(name, oldVal, newVal) {
         if (name === 'value' && oldVal !== newVal) {
             this._internals.setFormValue(newVal);
-            requestAnimationFrame(() => {
-                this.notifyChildren(newVal);
-            });
+            await this.notifyChildren(newVal);
         }
     }
 
-    notifyChildren(str) {
+    async notifyChildren(str) {
         const slot = this.shadowRoot.querySelector('slot');
         const assignedElements = slot.assignedElements();
-        assignedElements.forEach(el => {
+        const object = JSON.parse(this.unescapeHTML(str));
+
+        for (const el of assignedElements) {
+            if (el.tagName.includes('-')) {
+                await customElements.whenDefined(el.tagName.toLowerCase());
+            }
+
+            if (el && typeof el.updateValue === 'function') {
+                el.updateValue(object);
+            }
+
             el.dispatchEvent(new CustomEvent('value-changed', {
-                detail: JSON.parse(this.unescapeHTML(str)),
+                detail: object,
                 composed: true,
             }));
-        });
+        }
     }
 
     //unescapeHTML(str) {
@@ -68,6 +76,10 @@ class ParentComponent extends HTMLElement {
 
     set value(newVal) {
         this.setAttribute('value', newVal);
+    }
+
+    updateValue(object) {
+        this.setAttribute('value', JSON.stringify(object));
     }
 }
 
