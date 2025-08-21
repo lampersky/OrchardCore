@@ -73,7 +73,7 @@
 
     <textarea class="form-control @(Model.IsInline ? "" : "single-line-textarea")" onkeydown="preventEnter(this, event)" asp-for="Src" aria-label="@T["Inline code"]"></textarea>
 
-    <div class="input-group-text">
+    <div class="input-group-text d-flex gap-1">
         <button class="btn btn-outline-secondary btn-sm up" type="button" onclick="move(this, -1)"><i class="fa-solid fa-up-long"></i></button>
         <button class="btn btn-outline-secondary btn-sm down" type="button" onclick="move(this, 1)"><i class="fa-solid fa-down-long"></i></button>
         <button class="btn btn-outline-secondary btn-sm remove" type="button" onclick="removeResource(this)"><i class="fa-solid fa-trash"></i></button>

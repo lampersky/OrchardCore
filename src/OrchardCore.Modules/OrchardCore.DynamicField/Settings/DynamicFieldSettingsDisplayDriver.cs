@@ -8,15 +8,17 @@ using OrchardCore.DynamicField.Extensions;
 
 namespace OrchardCore.DynamicField.Settings;
 
-public sealed class DynamicFieldSettingsDisplayDriver(IHttpContextAccessor _httpContextAccessor, IContentDefinitionManager _contentDefinitionManager) : ContentPartFieldDefinitionDisplayDriver<Fields.DynamicField>
+public sealed class DynamicFieldSettingsDisplayDriver(
+    IHttpContextAccessor httpContextAccessor,
+    IContentDefinitionManager contentDefinitionManager
+    ) : ContentPartFieldDefinitionDisplayDriver<Fields.DynamicField>
 {
 
     public override async Task<IDisplayResult> EditAsync(ContentPartFieldDefinition partFieldDefinition, BuildEditorContext context)
     {
-        _httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentType", out var contentType);
-        _httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentField", out var contentField);
-        //"MyDynamicTestField", "WebComponent"
-        var templateSettings = await _contentDefinitionManager.GetFieldSettingsAsync<Fields.DynamicField, DynamicFieldSettings>(contentType, contentField);
+        httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentType", out var contentType);
+        httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentField", out var contentField);
+        var templateSettings = await contentDefinitionManager.GetFieldSettingsAsync<Fields.DynamicField, DynamicFieldSettings>(contentType, contentField);
 
         return Initialize<DynamicFieldSettings>("DynamicFieldSettings_Edit", model =>
         {
@@ -29,8 +31,7 @@ public sealed class DynamicFieldSettingsDisplayDriver(IHttpContextAccessor _http
     public override async Task<IDisplayResult> UpdateAsync(ContentPartFieldDefinition partFieldDefinition, UpdatePartFieldEditorContext context)
     {
         var model = new DynamicFieldSettings();
-        var success = await context.Updater.TryUpdateModelAsync(model, Prefix);
-
+        await context.Updater.TryUpdateModelAsync(model, Prefix);
         context.Builder.WithSettings(model);
 
         return Edit(partFieldDefinition, context);

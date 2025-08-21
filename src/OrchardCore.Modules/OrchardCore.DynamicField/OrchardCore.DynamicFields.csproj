@@ -3,10 +3,10 @@
   <PropertyGroup>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <!-- NuGet properties-->
-    <Title>Lampersky Dynamic Field</Title>
+    <Title>Lampersky Dynamic Fields</Title>
     <Description>$(OCCMSDescription)
 
-    Provides feature to add dynamic content field.</Description>
+    Provides feature to add dynamic content fields.</Description>
     <PackageTags>$(PackageTags) OrchardCoreCMS ContentManagement</PackageTags>
   </PropertyGroup>
 

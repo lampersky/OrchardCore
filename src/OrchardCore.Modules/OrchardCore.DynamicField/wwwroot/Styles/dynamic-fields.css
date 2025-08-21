@@ -6,9 +6,9 @@
     display: initial;
 }
 
-.resources:has(> :only-child) button.remove {
+/*.resources:has(> :only-child) button.remove {
     display: none;
-}
+}*/
 
 .resources .resource:last-child button.down, .resources .resource:first-child button.up {
     opacity: 0.5;
