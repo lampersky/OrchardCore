@@ -6,7 +6,7 @@ using OrchardCore.Data.Migration;
 
 namespace OrchardCore.DynamicFields.Indexing;
 
-[Feature("OrchardCore.DynamicField.Indexing.SQL")]
+[Feature("OrchardCore.DynamicFields.Indexing.SQL")]
 [RequireFeatures("OrchardCore.ContentFields.Indexing.SQL")]
 public sealed class Startup : StartupBase
 {

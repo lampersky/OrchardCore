@@ -36,7 +36,7 @@ public class Startup : StartupBase
     {
         routes.MapAreaControllerRoute(
             name: "Home",
-            areaName: "OrchardCore.DynamicField",
+            areaName: "OrchardCore.DynamicFields",
             pattern: "Home/Index",
             defaults: new { controller = "Home", action = "Index" }
         );

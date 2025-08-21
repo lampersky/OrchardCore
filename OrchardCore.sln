@@ -584,7 +584,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrchardCore.Indexing.Core",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrchardCore.Taxonomies.Core", "src\OrchardCore\OrchardCore.Taxonomies.Core\OrchardCore.Taxonomies.Core.csproj", "{6A379AE9-B468-4D89-82B2-0C350AB712F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrchardCore.DynamicFields", "src\OrchardCore.Modules\OrchardCore.DynamicField\OrchardCore.DynamicFields.csproj", "{9DF3130E-48CD-4322-A867-EA2E3FFF0B56}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrchardCore.DynamicFields", "src\OrchardCore.Modules\OrchardCore.DynamicFields\OrchardCore.DynamicFields.csproj", "{9DF3130E-48CD-4322-A867-EA2E3FFF0B56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
