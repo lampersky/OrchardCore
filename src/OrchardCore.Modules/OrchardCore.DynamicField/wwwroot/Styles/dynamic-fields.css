@@ -28,3 +28,11 @@
     height: auto;
     white-space: nowrap;
 }
+
+.resources span {
+    display: inline;
+}
+
+.resources:has(.resource) span {
+    display: none;
+}

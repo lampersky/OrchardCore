@@ -6,10 +6,7 @@
 @inject IContentDefinitionManager ContentDefinitionManager
 
 @{
-    var searchUrl = Url.RouteUrl(new { area = "OrchardCore.DynamicField", controller = "DynamicFieldsAdmin", action = "SearchDynamicFields" });
-
     var items = await ContentDefinitionManager.ListContentTypesWithFieldsNamesOfTypeAsync<OrchardCore.DynamicField.Fields.DynamicField>();
-
 }
 
 @if (Context.Request.Query.ContainsKey("contentType") && Context.Request.Query.ContainsKey("contentField"))
@@ -20,59 +17,72 @@
     </div>
 }
 
-<button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#contentTypesWithDynamicFieldsModal">
-    @T["Copy"]
-</button>
-<div class="modal fade" id="contentTypesWithDynamicFieldsModal" tabindex="-1" aria-labelledby="contentTypesWithDynamicFieldsModalTitle">
-    <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="contentTypesWithDynamicFieldsModalTitle">@T["Copy existing configuration"]</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@T["Close"]"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-danger" role="alert">
-                    @T["If you have already configured the dynamic field, your changes will be lost!"]
+<div class="mb-3">
+    <button type="button" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#contentTypesWithDynamicFieldsModal">
+        @T["Copy existing field configuration"]
+    </button>
+    <div class="modal fade" id="contentTypesWithDynamicFieldsModal" tabindex="-1" aria-labelledby="contentTypesWithDynamicFieldsModalTitle">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="contentTypesWithDynamicFieldsModalTitle">@T["Copy existing configuration"]</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@T["Close"]"></button>
                 </div>
-                <div>@T["Choose the field configuration you want to copy from:"]</div>
-                <div class="d-flex flex-column gap-6">
-                    @foreach (var item in items)
-                    {
-                        @foreach (var fieldName in item.Value)
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert">
+                        @T["If you have already configured the dynamic field, your changes will be lost!"]
+                    </div>
+                    <div>@T["Choose the field configuration you want to copy from:"]</div>
+                    <div class="d-flex flex-column gap-6">
+                        @foreach (var item in items)
                         {
-                            <a href="?contentType=@(item.Key)&contentField=@(fieldName)">@(item.Key).@(fieldName)</a>
+                            @foreach (var fieldName in item.Value)
+                            {
+                                <a href="?contentType=@(item.Key)&contentField=@(fieldName)">@(item.Key).@(fieldName)</a>
+                            }
                         }
-                    }
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@T["Close"]</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@T["Close"]</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <div class="mb-3">
-    <div class="w-md-75 w-xl-50 pe-md-3">
+    <div class="w-100 pe-md-3 pe-md-3">
         <label asp-for="Code" class="form-label">@T["Code"]</label>
         <textarea asp-for="Code" rows="2" class="form-control"></textarea>
     </div>
     <span class="hint">@T["The component code."]</span>
 </div>
 
-@{
-    /* variable name Capitalized intentionally */
-    var Resources = new[] { new Resource() };
-}
-
 <template id="resource-template">
+    @{
+        /* variable name Capitalized intentionally */
+        var Resources = new[] { new Resource() };
+    }
     @Html.EditorFor(_ => Resources)
 </template>
 
 <div class="mb-3">
-    <label class="form-label">@T["Resources"] <a onclick="addResource()"><i class="fa fa-plus-circle" aria-hidden="true"></i></a></label>
+    <div class="d-flex align-items-baseline gap-1">
+        <div class="form-label">@T["Resources"]</div>
+        <button type="button" class="btn btn-link p-0" onclick="addResource()">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+        </button>
+    </div>
     <div class="resources">
-        @Html.EditorFor(m => m.Resources)
+        @if (Model.Resources.Any())
+        {
+            @Html.EditorFor(m => m.Resources)
+        }
+        else
+        {
+            <span>@T["No resources have been added yet!"]</span>
+        }
     </div>
 </div>
 

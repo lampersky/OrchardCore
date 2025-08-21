@@ -1,3 +1,9 @@
+function clearQueryParams() {
+    const url = new URL(window.location);
+    ['contentType', 'contentField'].forEach(p => url.searchParams.delete(p));
+    history.replaceState(null, '', url);
+}
+
 function toggleEditor(input) {
     input.closest('.resource').querySelector('textarea').classList.toggle('single-line-textarea');
 }
@@ -75,3 +81,5 @@ function addResource() {
     reindex(cloned, items.length);
     itemsContainer.appendChild(cloned);
 }
+
+document.addEventListener('DOMContentLoaded', () => clearQueryParams());
