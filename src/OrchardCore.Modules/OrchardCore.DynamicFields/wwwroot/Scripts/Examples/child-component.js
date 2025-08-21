@@ -6,12 +6,16 @@ class ChildComponent extends HTMLElement {
 
     connectedCallback() {
         this.shadowRoot.innerHTML = `
-            <div>
-              <label for="latitude">Latitude:</label>
-              <input name="latitude" />
-
-              <label for="longitude">Longitude:</label>
-              <input name="longitude" />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+            <div class="container mt-3">
+            <div class="mb-3">
+                <label for="latitude" class="form-label">Latitude:</label>
+                <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter latitude">
+            </div>
+            <div class="mb-3">
+                <label for="longitude" class="form-label">Longitude:</label>
+                <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter longitude">
+            </div>
             </div>
         `;
 
@@ -31,13 +35,13 @@ class ChildComponent extends HTMLElement {
             }));
 
         this.addEventListener('value-changed', (event) => {
-            this.updateValue(event.detail);
+            this._updateValue(event.detail);
         });
 
         this.dispatchEvent(new CustomEvent('initial-value', { bubbles: true, composed: true }));
     }
 
-    updateValue(detail) {
+    _updateValue(detail) {
         this.latitude.value = detail?.latitude;
         this.longitude.value = detail?.longitude;
     }
