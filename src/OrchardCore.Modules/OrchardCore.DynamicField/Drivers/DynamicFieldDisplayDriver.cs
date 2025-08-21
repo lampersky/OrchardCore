@@ -21,7 +21,7 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Fields
     {
         return Initialize<DisplayDynamicFieldViewModel>(GetDisplayShapeType(context), model =>
         {
-            model.Value = JsonSerializer.Serialize(field.Value);
+            model.RawValue = JsonSerializer.Serialize(field.Value);
             model.Field = field;
             model.Part = context.ContentPart;
             model.PartFieldDefinition = context.PartFieldDefinition;
