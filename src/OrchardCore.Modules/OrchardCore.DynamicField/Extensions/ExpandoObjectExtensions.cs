@@ -1,6 +1,6 @@
 using System.Dynamic;
 
-namespace OrchardCore.DynamicField.Extensions;
+namespace OrchardCore.DynamicFields.Extensions;
 
 public static class ExpandoObjectExtensions
 {

@@ -1,7 +1,7 @@
 using System.Dynamic;
 using OrchardCore.ContentManagement;
 
-namespace OrchardCore.DynamicField.Fields;
+namespace OrchardCore.DynamicFields.Fields;
 
 public class DynamicField : ContentField
 {

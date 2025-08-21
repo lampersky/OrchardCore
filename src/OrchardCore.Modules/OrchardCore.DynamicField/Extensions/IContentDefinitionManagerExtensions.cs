@@ -1,7 +1,7 @@
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
 
-namespace OrchardCore.DynamicField.Extensions;
+namespace OrchardCore.DynamicFields.Extensions;
 internal static class IContentDefinitionManagerExtensions
 {
     public static async Task<Dictionary<string, List<ContentPartFieldDefinition>>> ListContentTypesWithFieldsOfTypeAsync<TField>(this IContentDefinitionManager contentDefinitionManager)

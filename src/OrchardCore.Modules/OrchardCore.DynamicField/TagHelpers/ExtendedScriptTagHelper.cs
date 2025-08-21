@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace OrchardCore.DynamicField.TagHelpers;
+namespace OrchardCore.DynamicFields.TagHelpers;
 
 [HtmlTargetElement("script", Attributes = DeferAttributeName)]
 [HtmlTargetElement("script", Attributes = AsyncAttributeName)]

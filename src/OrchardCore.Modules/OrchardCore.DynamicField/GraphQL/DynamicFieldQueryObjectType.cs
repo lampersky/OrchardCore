@@ -2,14 +2,15 @@ using System.Text.Json;
 using GraphQL.Types;
 using Microsoft.Extensions.Localization;
 using OrchardCore.Apis.GraphQL;
+using OrchardCore.DynamicFields.Fields;
 
-namespace OrchardCore.DynamicField.GraphQL;
+namespace OrchardCore.DynamicFields.GraphQL;
 
-public class DynamicFieldQueryObjectType : ObjectGraphType<Fields.DynamicField>
+public class DynamicFieldQueryObjectType : ObjectGraphType<DynamicField>
 {
     public DynamicFieldQueryObjectType(IStringLocalizer<DynamicFieldQueryObjectType> S)
     {
-        Name = nameof(OrchardCore.DynamicField.Fields.DynamicField);
+        Name = nameof(DynamicField);
 
         Field<StringGraphType, string>("raw")
             .Description(S["the raw value of the dynamic field"])

@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using OrchardCore.Admin;
 using OrchardCore.ContentManagement.Metadata;
-using OrchardCore.DynamicField.Extensions;
+using OrchardCore.DynamicFields.Extensions;
+using OrchardCore.DynamicFields.Fields;
 
-namespace OrchardCore.DynamicField.Controllers;
+namespace OrchardCore.DynamicFields.Controllers;
 
 [Admin]
 public sealed class DynamicFieldsAdminController(IContentDefinitionManager contentDefinitionManager) : Controller
@@ -13,7 +14,7 @@ public sealed class DynamicFieldsAdminController(IContentDefinitionManager conte
     [HttpGet]
     public async Task<IActionResult> SearchDynamicFields()
     {
-        var typesWithDynamicFields = await contentDefinitionManager.ListContentTypesWithFieldsNamesOfTypeAsync<Fields.DynamicField>();
+        var typesWithDynamicFields = await contentDefinitionManager.ListContentTypesWithFieldsNamesOfTypeAsync<DynamicField>();
 
         return new ObjectResult(typesWithDynamicFields);
     }

@@ -4,11 +4,12 @@ using Microsoft.Extensions.Localization;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.DynamicField.ViewModels;
+using OrchardCore.DynamicFields.Fields;
+using OrchardCore.DynamicFields.ViewModels;
 
-namespace OrchardCore.DynamicField.Drivers;
+namespace OrchardCore.DynamicFields.Drivers;
 
-public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Fields.DynamicField>
+public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<DynamicField>
 {
     internal readonly IStringLocalizer S;
 
@@ -17,7 +18,7 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Fields
         S = localizer;
     }
 
-    public override IDisplayResult Display(Fields.DynamicField field, BuildFieldDisplayContext context)
+    public override IDisplayResult Display(DynamicField field, BuildFieldDisplayContext context)
     {
         return Initialize<DisplayDynamicFieldViewModel>(GetDisplayShapeType(context), model =>
         {
@@ -30,7 +31,7 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Fields
         .Location("Summary", "Content");
     }
 
-    public override IDisplayResult Edit(Fields.DynamicField field, BuildFieldEditorContext context)
+    public override IDisplayResult Edit(DynamicField field, BuildFieldEditorContext context)
     {
         return Initialize<EditDynamicFieldViewModel>(GetEditorShapeType(context), model =>
         {
@@ -41,7 +42,7 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Fields
         });
     }
 
-    public override async Task<IDisplayResult> UpdateAsync(Fields.DynamicField field, UpdateFieldEditorContext context)
+    public override async Task<IDisplayResult> UpdateAsync(DynamicField field, UpdateFieldEditorContext context)
     {
         var model = new EditDynamicFieldViewModel();
         await context.Updater.TryUpdateModelAsync(model, Prefix, f => f.Value);

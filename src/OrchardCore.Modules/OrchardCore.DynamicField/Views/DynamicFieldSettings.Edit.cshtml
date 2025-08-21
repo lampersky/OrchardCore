@@ -1,12 +1,13 @@
 @using OrchardCore.ContentManagement.Metadata
-@using OrchardCore.DynamicField.Extensions
-@using OrchardCore.DynamicField.Settings
+@using OrchardCore.DynamicFields.Extensions
+@using OrchardCore.DynamicFields.Fields
+@using OrchardCore.DynamicFields.Settings
 @using OrchardCore.ResourceManagement
-@model OrchardCore.DynamicField.Settings.DynamicFieldSettings
+@model OrchardCore.DynamicFields.Settings.DynamicFieldSettings
 @inject IContentDefinitionManager ContentDefinitionManager
 
 @{
-    var items = await ContentDefinitionManager.ListContentTypesWithFieldsNamesOfTypeAsync<OrchardCore.DynamicField.Fields.DynamicField>();
+    var items = await ContentDefinitionManager.ListContentTypesWithFieldsNamesOfTypeAsync<DynamicField>();
 }
 
 @if (Context.Request.Query.ContainsKey("contentType") && Context.Request.Query.ContainsKey("contentField"))

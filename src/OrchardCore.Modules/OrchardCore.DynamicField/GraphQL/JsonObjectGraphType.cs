@@ -1,7 +1,7 @@
 using GraphQL.Types;
 using GraphQLParser.AST;
 
-namespace OrchardCore.DynamicField.GraphQL;
+namespace OrchardCore.DynamicFields.GraphQL;
 
 public class JsonObjectGraphType : ScalarGraphType
 {

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OrchardCore.ResourceManagement;
 
-namespace OrchardCore.DynamicField.Settings;
+namespace OrchardCore.DynamicFields.Settings;
 
 public class DynamicFieldSettings
 {

@@ -3,7 +3,7 @@ using OrchardCore.ContentManagement.Records;
 using OrchardCore.Data.Migration;
 using YesSql.Sql;
 
-namespace OrchardCore.DynamicField.Indexing.SQL;
+namespace OrchardCore.DynamicFields.Indexing.SQL;
 
 public sealed class Migrations : DataMigration
 {

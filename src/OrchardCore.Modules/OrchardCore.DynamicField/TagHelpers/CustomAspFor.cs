@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace OrchardCore.DynamicField.TagHelpers;
+namespace OrchardCore.DynamicFields.TagHelpers;
 
 [HtmlTargetElement("parent-component", Attributes = ForAttributeName)]
 public class CustomAspForHelper : InputTagHelper {

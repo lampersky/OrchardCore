@@ -1,10 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
-using OrchardCore.DynamicField.Indexing.SQL;
+using OrchardCore.DynamicFields.Indexing.SQL;
 using OrchardCore.Modules;
 using OrchardCore.Data;
 using OrchardCore.Data.Migration;
 
-namespace OrchardCore.DynamicField.Indexing;
+namespace OrchardCore.DynamicFields.Indexing;
 
 [Feature("OrchardCore.DynamicField.Indexing.SQL")]
 [RequireFeatures("OrchardCore.ContentFields.Indexing.SQL")]

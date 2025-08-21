@@ -9,7 +9,7 @@ using OrchardCore.Modules.Manifest;
 )]
 
 [assembly: Feature(
-    Id = "OrchardCore.DynamicField",
+    Id = "OrchardCore.DynamicFields",
     Name = "Dynamic Fields",
     Category = "Content Management",
     Description = "Dynamic Fields module adds dynamic fields to be used with your custom types.",
@@ -17,13 +17,13 @@ using OrchardCore.Modules.Manifest;
 )]
 
 [assembly: Feature(
-    Id = "OrchardCore.DynamicField.Indexing.SQL",
+    Id = "OrchardCore.DynamicFields.Indexing.SQL",
     Name = "Dynamic Fields Indexing (SQL)",
     Category = "Content Management",
     Description = "Dynamic Fields Indexing module adds database indexing for user dynamic fields.",
     Dependencies =
     [
-        "OrchardCore.DynamicField",
+        "OrchardCore.DynamicFields",
         "OrchardCore.ContentFields",
         "OrchardCore.ContentFields.Indexing.SQL"
     ]

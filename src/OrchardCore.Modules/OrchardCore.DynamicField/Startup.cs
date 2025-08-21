@@ -5,25 +5,26 @@ using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentTypes.Editors;
-using OrchardCore.DynamicField.Drivers;
-using OrchardCore.DynamicField.Settings;
-using OrchardCore.DynamicField.TagHelpers;
-using OrchardCore.DynamicField.ViewModels;
+using OrchardCore.DynamicFields.Drivers;
+using OrchardCore.DynamicFields.Fields;
+using OrchardCore.DynamicFields.Settings;
+using OrchardCore.DynamicFields.TagHelpers;
+using OrchardCore.DynamicFields.ViewModels;
 using OrchardCore.Modules;
 
-namespace OrchardCore.DynamicField;
+namespace OrchardCore.DynamicFields;
 
 public class Startup : StartupBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.AddContentField<Fields.DynamicField>()
+        services.AddContentField<DynamicField>()
             .UseDisplayDriver<DynamicFieldDisplayDriver>();
         services.AddScoped<IContentPartFieldDefinitionDisplayDriver, DynamicFieldSettingsDisplayDriver>();
 
         services.Configure<TemplateOptions>(o =>
         {
-            o.MemberAccessStrategy.Register<Fields.DynamicField>();
+            o.MemberAccessStrategy.Register<DynamicField>();
             o.MemberAccessStrategy.Register<DisplayDynamicFieldViewModel>();
         });
 

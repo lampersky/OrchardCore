@@ -3,10 +3,11 @@ using OrchardCore.ContentFields.Indexing.SQL;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
-using OrchardCore.DynamicField.Extensions;
+using OrchardCore.DynamicFields.Extensions;
+using OrchardCore.DynamicFields.Fields;
 using YesSql.Indexes;
 
-namespace OrchardCore.DynamicField.Indexing.SQL;
+namespace OrchardCore.DynamicFields.Indexing.SQL;
 
 public class DynamicFieldIndex : TextFieldIndex
 {
@@ -56,7 +57,7 @@ public class DynamicFieldIndexProvider : ContentFieldIndexProvider
                 }
 
                 var fieldDefinitions = contentTypeDefinition
-                    .Parts.SelectMany(x => x.PartDefinition.Fields.Where(f => f.FieldDefinition.Name == nameof(Fields.DynamicField)))
+                    .Parts.SelectMany(x => x.PartDefinition.Fields.Where(f => f.FieldDefinition.Name == nameof(DynamicField)))
                     .ToArray();
 
                 // This type doesn't have any DynamicField, ignore it
@@ -67,7 +68,7 @@ public class DynamicFieldIndexProvider : ContentFieldIndexProvider
                 }
 
                 return fieldDefinitions
-                    .GetContentFields<Fields.DynamicField>(contentItem)
+                    .GetContentFields<DynamicField>(contentItem)
                     .SelectMany(pair => {
 
                         var flattened = pair.Field.Value.Flatten();

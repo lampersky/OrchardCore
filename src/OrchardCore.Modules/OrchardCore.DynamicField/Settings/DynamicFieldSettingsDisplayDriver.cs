@@ -4,21 +4,22 @@ using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.ContentTypes.Editors;
 using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.DisplayManagement.Views;
-using OrchardCore.DynamicField.Extensions;
+using OrchardCore.DynamicFields.Extensions;
+using OrchardCore.DynamicFields.Fields;
 
-namespace OrchardCore.DynamicField.Settings;
+namespace OrchardCore.DynamicFields.Settings;
 
 public sealed class DynamicFieldSettingsDisplayDriver(
     IHttpContextAccessor httpContextAccessor,
     IContentDefinitionManager contentDefinitionManager
-    ) : ContentPartFieldDefinitionDisplayDriver<Fields.DynamicField>
+    ) : ContentPartFieldDefinitionDisplayDriver<DynamicField>
 {
 
     public override async Task<IDisplayResult> EditAsync(ContentPartFieldDefinition partFieldDefinition, BuildEditorContext context)
     {
         httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentType", out var contentType);
         httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentField", out var contentField);
-        var templateSettings = await contentDefinitionManager.GetFieldSettingsAsync<Fields.DynamicField, DynamicFieldSettings>(contentType, contentField);
+        var templateSettings = await contentDefinitionManager.GetFieldSettingsAsync<DynamicField, DynamicFieldSettings>(contentType, contentField);
 
         return Initialize<DynamicFieldSettings>("DynamicFieldSettings_Edit", model =>
         {

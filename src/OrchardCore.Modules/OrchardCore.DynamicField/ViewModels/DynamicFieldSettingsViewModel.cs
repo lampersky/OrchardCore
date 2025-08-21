@@ -1,4 +1,4 @@
-namespace OrchardCore.DynamicField.ViewModels;
+namespace OrchardCore.DynamicFields.ViewModels;
 
 public class DynamicFieldSettingsViewModel
 {
