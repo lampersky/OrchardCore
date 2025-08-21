@@ -9,7 +9,7 @@
 
     <div class="dropdown-menu">
         <div class="mb-1 px-3">
-            <h6 class="dropdown-header">Resource type</h6>
+            <h6 class="dropdown-header">@T["Resource type"]</h6>
             <div class="form-check">
                 <input class="form-check-input" type="radio" asp-for="Type" id="@Html.IdFor(m => m.Type)_script" value="@ResourceType.Script" onclick="onResourceTypeChange(this)">
                 <label class="form-check-label" for="@Html.IdFor(m => m.Type)_script">
@@ -27,7 +27,7 @@
         <hr class="dropdown-divider">
 
         <div class="mb-1 px-3">
-            <h6 class="dropdown-header">Resource placement</h6>
+            <h6 class="dropdown-header">@T["Resource placement"]</h6>
             <div class="form-check">
                 <input class="form-check-input" type="radio" asp-for="At" id="@Html.IdFor(m => m.Type)_foot" value="@ResourceLocation.Foot">
                 <label class="form-check-label" for="@Html.IdFor(m => m.Type)_foot">
@@ -45,7 +45,7 @@
         <hr class="dropdown-divider">
 
         <div class="mb-1 px-3">
-            <h6 class="dropdown-header">Resource config</h6>
+            <h6 class="dropdown-header">@T["Resource config"]</h6>
             <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="@Html.IdFor(m => m.IsInline)" name="@Html.NameFor(m => m.IsInline)" @(Model.IsInline ? "checked" : "") onclick="toggleEditor(this)" value="true" />
                 <label class="form-check-label" for="@Html.IdFor(m => m.IsInline)"> @T["Inline"] </label>
@@ -71,7 +71,7 @@
         </div>
     </div>
 
-    <textarea class="form-control @(Model.IsInline ? "" : "single-line-textarea")" onkeydown="preventEnter(this, event)" asp-for="Src" aria-label="Inline code"></textarea>
+    <textarea class="form-control @(Model.IsInline ? "" : "single-line-textarea")" onkeydown="preventEnter(this, event)" asp-for="Src" aria-label="@T["Inline code"]"></textarea>
 
     <div class="input-group-text">
         <button class="btn btn-outline-secondary btn-sm up" type="button" onclick="move(this, -1)"><i class="fa-solid fa-up-long"></i></button>

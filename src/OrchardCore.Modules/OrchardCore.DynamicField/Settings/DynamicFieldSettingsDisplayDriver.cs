@@ -16,7 +16,7 @@ public sealed class DynamicFieldSettingsDisplayDriver(IHttpContextAccessor _http
         _httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentType", out var contentType);
         _httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentField", out var contentField);
         //"MyDynamicTestField", "WebComponent"
-        var templateSettings = await _contentDefinitionManager.GetFieldSettings<Fields.DynamicField, DynamicFieldSettings>(contentType, contentField);
+        var templateSettings = await _contentDefinitionManager.GetFieldSettingsAsync<Fields.DynamicField, DynamicFieldSettings>(contentType, contentField);
 
         return Initialize<DynamicFieldSettings>("DynamicFieldSettings_Edit", model =>
         {

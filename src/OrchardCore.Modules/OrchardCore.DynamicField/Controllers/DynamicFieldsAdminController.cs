@@ -30,7 +30,7 @@ public sealed class DynamicFieldsAdminController : Controller
     [HttpGet]
     public async Task<IActionResult> SearchDynamicFields()
     {
-        var typesWithDynamicFields = await _contentDefinitionManager.ListContentTypesWithFieldsNamesOfType<Fields.DynamicField>();
+        var typesWithDynamicFields = await _contentDefinitionManager.ListContentTypesWithFieldsNamesOfTypeAsync<Fields.DynamicField>();
 
         return new ObjectResult(typesWithDynamicFields);
     }
