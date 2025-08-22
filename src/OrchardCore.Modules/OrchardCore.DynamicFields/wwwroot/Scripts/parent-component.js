@@ -13,17 +13,18 @@ class ParentComponent extends HTMLElement {
     }
 
     connectedCallback() {
-        this.addEventListener('value-changed', (event) => {
-            this.updateValue(event.detail);
-        });
-        this.addEventListener('initial-value', async (event) => {
-            /* we could only notify event.target, but let's notify all children */
-            //event.target.dispatchEvent(new CustomEvent('value-changed', {
-            //    detail: JSON.parse(this.unescapeHTML(this.getAttribute('value'))),
-            //    composed: true,
-            //}));
-            await this.notifyChildren(this.value/*this.getAttribute('value')*/);
-        });
+        //this.addEventListener('value-changed', (event) => {
+        //    this.updateValue(event.detail);
+        //});
+        //this.addEventListener('initial-value', async (event) => {
+        //    /* we could only notify event.target, but let's notify all children */
+        //    //event.target.dispatchEvent(new CustomEvent('value-changed', {
+        //    //    detail: JSON.parse(this.unescapeHTML(this.getAttribute('value'))),
+        //    //    composed: true,
+        //    //}));
+        //    await this.notifyChildren(this.value/*this.getAttribute('value')*/);
+        //});
+        console.log('attr id:', this.getAttribute('id'));
 
         this.shadowRoot.querySelector('slot').addEventListener('slotchange', async (event) => {
             await this.notifyChildren(this.value/*this.getAttribute('value')*/);
@@ -40,9 +41,10 @@ class ParentComponent extends HTMLElement {
     async notifyChildren(object) {
         const slot = this.shadowRoot.querySelector('slot');
         const assignedElements = slot.assignedElements();
-        //const object = JSON.parse(this.unescapeHTML(str));
 
         for (const el of assignedElements) {
+            el.setAttribute('parentId', this.getAttribute('id'));
+
             if (el.tagName.includes('-')) {
                 await customElements.whenDefined(el.tagName.toLowerCase());
             }
@@ -51,10 +53,10 @@ class ParentComponent extends HTMLElement {
                 el.updateValue(object);
             }
 
-            el.dispatchEvent(new CustomEvent('value-changed', {
-                detail: object,
-                composed: true,
-            }));
+            //el.dispatchEvent(new CustomEvent('value-changed', {
+            //    detail: object,
+            //    composed: true,
+            //}));
         }
     }
 
@@ -77,11 +79,6 @@ class ParentComponent extends HTMLElement {
     set value(newValObject) {
         this.setAttribute('value', JSON.stringify(newValObject));
     }
-
-    /* obsolete */
-    updateValue(object) {
-        this.value = object;
-    }
 }
 
 customElements.define('parent-component', ParentComponent);
@@ -90,19 +87,11 @@ function init(id) {
     console.log(id);
     window.dynamicFields = window.dynamicFields ?? {};
     window.dynamicFields[id] = {
-        updateValue: function (object) {
-            const parent = document.getElementById(id);
-            if (parent && typeof parent.updateValue === 'function') {
-                parent.updateValue(object);
-            }
-        },
         getValue: function () {
-            const parent = document.getElementById(id);
-            return parent.value;
+            return document.getElementById(id).value;
         },
         setValue: function (newValue) {
-            const parent = document.getElementById(id);
-            parent.value = newValue;
+            document.getElementById(id).value = newValue;
         },
         querySelector: function (selector) {
             return document.getElementById(id).querySelector(selector);

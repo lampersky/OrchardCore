@@ -17,8 +17,8 @@
     </div>
 </div>
 
-<script asp-name="parent-component" at="Foot" asp-src="~/OrchardCore.DynamicFields/Scripts/parent-component.js"></script>
-<script at="Foot" depends-on="parent-component">
+<script asp-name="parent-component" at="Head" asp-src="~/OrchardCore.DynamicFields/Scripts/parent-component.js"></script>
+<script at="Head" depends-on="parent-component">
     init(`@Html.IdFor(m => m.Value)`);
 </script>
 

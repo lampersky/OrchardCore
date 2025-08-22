@@ -21,17 +21,22 @@ class AnotherChildComponent extends HTMLElement {
         this.latitude = this./*shadowRoot.*/querySelector('input[name="latitude"]');
         this.longitude = this./*shadowRoot.*/querySelector('input[name="longitude"]');
 
+        const methods = window.dynamicFields?.[this.getAttribute('parentId')];
+        console.log(methods);
+
         [this.latitude, this.longitude].forEach(input =>
             input.addEventListener('input', () => {
                 const object = {
                     latitude: this.latitude.value,
                     longitude: this.longitude.value,
                 };
-
-                if (this.parentElement && typeof this.parentElement.updateValue === 'function') {
-                    this.parentElement.updateValue(object);
-                }
+                methods.setValue(object);
+                //if (this.parentElement && typeof this.parentElement.updateValue === 'function') {
+                //    this.parentElement.updateValue(object);
+                //}
             }));
+
+        this.updateValue(methods.getValue());
     }
 
     updateValue(detail) {
