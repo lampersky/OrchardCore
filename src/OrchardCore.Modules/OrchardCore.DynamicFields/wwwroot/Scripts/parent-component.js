@@ -22,25 +22,25 @@ class ParentComponent extends HTMLElement {
             //    detail: JSON.parse(this.unescapeHTML(this.getAttribute('value'))),
             //    composed: true,
             //}));
-            await this.notifyChildren(this.getAttribute('value'));
+            await this.notifyChildren(this.value/*this.getAttribute('value')*/);
         });
 
         this.shadowRoot.querySelector('slot').addEventListener('slotchange', async (event) => {
-            await this.notifyChildren(this.getAttribute('value'));
+            await this.notifyChildren(this.value/*this.getAttribute('value')*/);
         });
     }
 
     async attributeChangedCallback(name, oldVal, newVal) {
         if (name === 'value' && oldVal !== newVal) {
             this._internals.setFormValue(newVal);
-            await this.notifyChildren(newVal);
+            await this.notifyChildren(JSON.parse(this.unescapeHTML(newVal)));
         }
     }
 
-    async notifyChildren(str) {
+    async notifyChildren(object) {
         const slot = this.shadowRoot.querySelector('slot');
         const assignedElements = slot.assignedElements();
-        const object = JSON.parse(this.unescapeHTML(str));
+        //const object = JSON.parse(this.unescapeHTML(str));
 
         for (const el of assignedElements) {
             if (el.tagName.includes('-')) {
@@ -71,16 +71,47 @@ class ParentComponent extends HTMLElement {
     }
 
     get value() {
-        return this.getAttribute('value');
+        return JSON.parse(this.getAttribute('value'));
     }
 
-    set value(newVal) {
-        this.setAttribute('value', newVal);
+    set value(newValObject) {
+        this.setAttribute('value', JSON.stringify(newValObject));
     }
 
+    /* obsolete */
     updateValue(object) {
-        this.setAttribute('value', JSON.stringify(object));
+        this.value = object;
     }
 }
 
 customElements.define('parent-component', ParentComponent);
+
+function init(id) {
+    console.log(id);
+    window.dynamicFields = window.dynamicFields ?? {};
+    window.dynamicFields[id] = {
+        updateValue: function (object) {
+            const parent = document.getElementById(id);
+            if (parent && typeof parent.updateValue === 'function') {
+                parent.updateValue(object);
+            }
+        },
+        getValue: function () {
+            const parent = document.getElementById(id);
+            return parent.value;
+        },
+        setValue: function (newValue) {
+            const parent = document.getElementById(id);
+            parent.value = newValue;
+        },
+        querySelector: function (selector) {
+            return document.getElementById(id).querySelector(selector);
+        },
+        querySelectorAll: function (selector) {
+            return document.getElementById(id).querySelectorAll(selector);
+        },
+        closest: function (selector) {
+            return document.getElementById(id).closest(selector);
+        },
+    };
+}

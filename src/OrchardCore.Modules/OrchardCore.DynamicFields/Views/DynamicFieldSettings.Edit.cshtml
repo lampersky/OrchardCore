@@ -2,6 +2,7 @@
 @using OrchardCore.DynamicFields.Extensions
 @using OrchardCore.DynamicFields.Fields
 @using OrchardCore.DynamicFields.Settings
+@using OrchardCore.DynamicFields.ViewModels
 @using OrchardCore.ResourceManagement
 @model OrchardCore.DynamicFields.Settings.DynamicFieldSettings
 @inject IContentDefinitionManager ContentDefinitionManager
@@ -54,6 +55,14 @@
         </div>
     </div>
 }
+
+<div class="alert alert-info" role="alert">
+    @{
+        var fieldId = Html.IdFor(m => m).Replace(nameof(DynamicFieldSettingsDisplayDriver), "Value");
+    }
+    <code>window.dynamicFields.@(fieldId).getValue();</code>
+    <code>window.dynamicFields.@(fieldId).setValue();</code>
+</div>
 
 <div class="mb-3">
     <div class="w-100 pe-md-3 pe-md-3">
