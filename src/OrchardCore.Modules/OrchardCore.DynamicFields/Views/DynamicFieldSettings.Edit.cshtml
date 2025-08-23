@@ -14,7 +14,8 @@
 @if (Context.Request.Query.ContainsKey("contentType") && Context.Request.Query.ContainsKey("contentField"))
 {
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        @T["The DynamicField configuration was copied from the '{1}' field of the '{0}' content type. Don't forget to save your changes.", Context.Request.Query["contentType"], Context.Request.Query["contentField"]]
+        @T["The DynamicField configuration was copied from the '{1}' field of the '{0}' content type. Don't forget to save your changes.", Context.Request.Query["contentType"], Context.Request.Query["contentField"]]<br />
+        @T["Please edit all usages of (window.dynamicFields.*)!"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="@T["Close"]"></button>
     </div>
 }
@@ -60,9 +61,7 @@
     @{
         var fieldId = Html.IdFor(m => m).Replace(nameof(DynamicFieldSettingsDisplayDriver), "Value");
     }
-    <pre>
-        <code class="language-javascript">
-(function () {
+<pre class="mb-0"><code class="language-javascript">(function () {
     /* available functions */
     const {
         getValue, 
@@ -75,9 +74,7 @@
     addEventListener('value', (object) => {
         /* your code */
     }, {init: true});
-})();
-        </code>
-    </pre>
+})();</code></pre>
 </div>
 
 <div class="mb-3">
