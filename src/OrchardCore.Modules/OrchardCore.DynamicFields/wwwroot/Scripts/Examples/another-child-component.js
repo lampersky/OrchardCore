@@ -21,8 +21,11 @@ class AnotherChildComponent extends HTMLElement {
         this.latitude = this./*shadowRoot.*/querySelector('input[name="latitude"]');
         this.longitude = this./*shadowRoot.*/querySelector('input[name="longitude"]');
 
-        const methods = window.dynamicFields?.[this.getAttribute('parentId')];
-        console.log(methods);
+        const { addEventListener, getValue, setValue } = window.dynamicFields?.[this.getAttribute('dynamic-field-parent-id')];
+
+        addEventListener('value', (value) => {
+            this.updateValue(getValue());
+        }, { init : true });
 
         [this.latitude, this.longitude].forEach(input =>
             input.addEventListener('input', () => {
@@ -30,13 +33,9 @@ class AnotherChildComponent extends HTMLElement {
                     latitude: this.latitude.value,
                     longitude: this.longitude.value,
                 };
-                methods.setValue(object);
-                //if (this.parentElement && typeof this.parentElement.updateValue === 'function') {
-                //    this.parentElement.updateValue(object);
-                //}
+                setValue(object);
             }));
-
-        this.updateValue(methods.getValue());
+        // initial value is set via listener
     }
 
     updateValue(detail) {

@@ -60,8 +60,24 @@
     @{
         var fieldId = Html.IdFor(m => m).Replace(nameof(DynamicFieldSettingsDisplayDriver), "Value");
     }
-    <code>window.dynamicFields.@(fieldId).getValue();</code>
-    <code>window.dynamicFields.@(fieldId).setValue();</code>
+    <pre>
+        <code class="language-javascript">
+(function () {
+    /* available functions */
+    const {
+        getValue, 
+        setValue, 
+        addEventListener, 
+        querySelector, 
+        closest 
+    } = window.dynamicFields.@(fieldId);
+
+    addEventListener('value', (object) => {
+        /* your code */
+    }, {init: true});
+})();
+        </code>
+    </pre>
 </div>
 
 <div class="mb-3">
