@@ -1,4 +1,4 @@
-class AnotherChildComponent extends HTMLElement {
+class GeoCoordinatesComponent extends HTMLElement {
     constructor() {
         super();
         /*this.attachShadow({ mode: 'open' });*/
@@ -44,4 +44,4 @@ class AnotherChildComponent extends HTMLElement {
     }
 }
 
-customElements.define('another-child-component', AnotherChildComponent);
+customElements.define('geo-coordinates', GeoCoordinatesComponent);
