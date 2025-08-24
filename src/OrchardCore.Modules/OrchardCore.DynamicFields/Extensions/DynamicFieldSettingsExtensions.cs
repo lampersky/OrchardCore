@@ -27,7 +27,7 @@ public static class DynamicFieldSettingsExtensions
 
         foreach (var resource in dynamicFieldSettings.Resources)
         {
-            if (resource.IsInline && !string.IsNullOrEmpty(resource.Src))
+            if (!resource.IsInline || string.IsNullOrEmpty(resource.Src))
             {
                 continue;
             }

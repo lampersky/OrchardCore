@@ -57,11 +57,18 @@
     </div>
 }
 
-<div class="alert alert-info" role="alert">
-    @{
-        var fieldId = Html.IdFor(m => m).Replace(nameof(DynamicFieldSettingsDisplayDriver), "Value");
-    }
-<pre class="mb-0"><code class="language-javascript">(function () {
+<div class="mb-3">
+    <a class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Do you need help?
+    </a>
+
+    <div class="collapse mt-3" id="collapseExample">
+        <div class="alert alert-info" role="alert">
+            @{
+                var fieldId = Html.IdFor(m => m).Replace(nameof(DynamicFieldSettingsDisplayDriver), "Value");
+            }
+            <pre class="mb-0">
+(function () {
     /* available functions */
     const {
         getValue, 
@@ -74,7 +81,18 @@
     addEventListener('value', (object) => {
         /* your code */
     }, {init: true});
-})();</code></pre>
+})();
+            </pre>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="form-check">
+        <input asp-for="IndexRawValue" type="checkbox" class="form-check-input">
+        <label class="form-check-label" asp-for="IndexRawValue">@T["Index RAW Value"]</label>
+        <span class="hint dashed">@T["Whether a raw JSON value is indexed."]</span>
+    </div>
 </div>
 
 <div class="mb-3">

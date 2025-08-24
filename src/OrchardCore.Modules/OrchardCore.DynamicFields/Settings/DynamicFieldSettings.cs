@@ -7,6 +7,7 @@ namespace OrchardCore.DynamicFields.Settings;
 
 public class DynamicFieldSettings
 {
+    public bool IndexRawValue { get; set; } = true;
     public string Code { get; set; }
     public List<Resource> Resources { get; set; } = new();
 }

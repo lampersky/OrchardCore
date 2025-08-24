@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentFields.Indexing.SQL;
 using OrchardCore.ContentManagement;
@@ -5,6 +6,7 @@ using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
 using OrchardCore.DynamicFields.Extensions;
 using OrchardCore.DynamicFields.Fields;
+using OrchardCore.DynamicFields.Settings;
 using YesSql.Indexes;
 
 namespace OrchardCore.DynamicFields.Indexing.SQL;
@@ -70,35 +72,58 @@ public class DynamicFieldIndexProvider : ContentFieldIndexProvider
                 return fieldDefinitions
                     .GetContentFields<DynamicField>(contentItem)
                     .SelectMany(pair => {
-
-                        var flattened = pair.Field.Value.Flatten();
-
-                        var grouped = flattened.GroupBy(item => item.Value.GetType());
-
                         var result = new List<DynamicFieldIndex> { };
 
-                        foreach (var group in grouped)
+                        var settings = pair.Definition.GetSettings<DynamicFieldSettings>();
+
+                        if (settings.IndexRawValue)
                         {
-                            var type = group.Key;
-                            foreach (var item in group)
+                            var value = JsonSerializer.Serialize(pair.Field.Value);
+
+                            result.Add(
+                                new DynamicFieldIndex
+                                {
+                                    Latest = contentItem.Latest,
+                                    Published = contentItem.Published,
+                                    ContentItemId = contentItem.ContentItemId,
+                                    ContentItemVersionId = contentItem.ContentItemVersionId,
+                                    ContentType = contentItem.ContentType,
+                                    ContentPart = pair.Definition.ContentTypePartDefinition.Name,
+                                    ContentField = pair.Definition.Name,
+                                    Type = value.GetType().ToString(),
+                                    Path = "raw",
+                                    Text = value?.ToString()?[..Math.Min(value?.ToString()?.Length ?? 0, TextFieldIndex.MaxTextSize)],
+                                    BigText = value?.ToString(),
+                                });
+                        }
+                        else
+                        {
+                            var flattened = pair.Field.Value.Flatten();
+                            var grouped = flattened.GroupBy(item => item.Value?.GetType() ?? typeof(object));
+
+                            foreach (var group in grouped)
                             {
-                                var path = item.Key;
-                                var value = item.Value;
-                                result.Add(
-                                    new DynamicFieldIndex
-                                    {
-                                        Latest = contentItem.Latest,
-                                        Published = contentItem.Published,
-                                        ContentItemId = contentItem.ContentItemId,
-                                        ContentItemVersionId = contentItem.ContentItemVersionId,
-                                        ContentType = contentItem.ContentType,
-                                        ContentPart = pair.Definition.ContentTypePartDefinition.Name,
-                                        ContentField = pair.Definition.Name,
-                                        Type = type.ToString(),
-                                        Path = path,
-                                        Text = value.ToString()?[..Math.Min(value.ToString().Length, TextFieldIndex.MaxTextSize)],
-                                        BigText = value.ToString(),
-                                    });
+                                var type = group.Key;
+                                foreach (var item in group)
+                                {
+                                    var path = item.Key;
+                                    var value = item.Value;
+                                    result.Add(
+                                        new DynamicFieldIndex
+                                        {
+                                            Latest = contentItem.Latest,
+                                            Published = contentItem.Published,
+                                            ContentItemId = contentItem.ContentItemId,
+                                            ContentItemVersionId = contentItem.ContentItemVersionId,
+                                            ContentType = contentItem.ContentType,
+                                            ContentPart = pair.Definition.ContentTypePartDefinition.Name,
+                                            ContentField = pair.Definition.Name,
+                                            Type = type.ToString(),
+                                            Path = path,
+                                            Text = value?.ToString()?[..Math.Min(value?.ToString()?.Length ?? 0, TextFieldIndex.MaxTextSize)],
+                                            BigText = value?.ToString(),
+                                        });
+                                }
                             }
                         }
 
