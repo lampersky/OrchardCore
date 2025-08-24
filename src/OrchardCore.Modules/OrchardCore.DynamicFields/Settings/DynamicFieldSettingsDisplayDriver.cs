@@ -14,12 +14,14 @@ public sealed class DynamicFieldSettingsDisplayDriver(
     IContentDefinitionManager contentDefinitionManager
     ) : ContentPartFieldDefinitionDisplayDriver<DynamicField>
 {
-
     public override async Task<IDisplayResult> EditAsync(ContentPartFieldDefinition partFieldDefinition, BuildEditorContext context)
     {
         httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentType", out var contentType);
         httpContextAccessor.HttpContext.Request.Query.TryGetValue("contentField", out var contentField);
         var templateSettings = await contentDefinitionManager.GetFieldSettingsAsync<DynamicField, DynamicFieldSettings>(contentType, contentField);
+        templateSettings = templateSettings.Fix(contentType, contentField,
+            partFieldDefinition.PartDefinition.Name,
+            partFieldDefinition.Name);
 
         return Initialize<DynamicFieldSettings>("DynamicFieldSettings_Edit", model =>
         {
