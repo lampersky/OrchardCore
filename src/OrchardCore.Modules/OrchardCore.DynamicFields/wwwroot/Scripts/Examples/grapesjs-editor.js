@@ -74,7 +74,7 @@ class GrapesJsEditor extends HTMLElement {
         }
     }
     onChange(image) {
-        console.log(image);
+        // leave it empty
     }
 }
 if (!window.customElements.get('grapesjs-editor')) {

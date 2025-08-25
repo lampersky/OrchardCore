@@ -37,7 +37,7 @@ class GeoCoordinatesComponent extends HTMLElement {
                 };
                 setValue(object);
             }));
-        // The initial value is set via a listener, alternatively, you can do this:
+        /* The initial value is set via a listener, alternatively, you can do this: */
         // this.updateValue(getValue());
     }
 

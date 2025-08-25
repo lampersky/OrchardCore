@@ -52,7 +52,7 @@ class SimpleImageGallery extends HTMLElement {
         selectedImageEl.src = `${imageUrl}?v=${new Date().toJSON()}`;
     }
     onChange(image) {
-        console.log(image);
+        // leave it empty
     }
 }
 if (!window.customElements.get('simple-image-gallery')) {

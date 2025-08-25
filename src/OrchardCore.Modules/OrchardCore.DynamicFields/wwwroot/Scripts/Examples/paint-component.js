@@ -86,7 +86,7 @@ class PaintComponent extends HTMLElement {
     }
 
     onChange(object) {
-        //dummy
+        // leave it empty
     }
 }
 if (!window.customElements.get('paint-component')) {

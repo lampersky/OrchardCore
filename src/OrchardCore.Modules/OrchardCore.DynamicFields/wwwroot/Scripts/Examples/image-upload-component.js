@@ -55,7 +55,6 @@ class ImageUploadComponent extends HTMLElement {
         });
         getElement().closest('form').querySelectorAll('button[type="submit"]').forEach(button => {
             button.addEventListener('click', () => {
-                console.log('click');
                 window.removeEventListener("beforeunload", this.beforeUnloadHandler)
             });
         });
@@ -108,7 +107,6 @@ class ImageUploadComponent extends HTMLElement {
 
         return new Promise((resolve) => {
             canvas.toBlob((blob) => {
-                console.log('blob', blob);
                 const dataURL = canvas.toDataURL();
                 resolve({ blob, dataURL });
             }, type, quality);

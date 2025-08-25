@@ -34,12 +34,6 @@ class ParentComponent extends HTMLElement {
         }
     }
 
-    //unescapeHTML(str) {
-    //    const temp = document.createElement("textarea");
-    //    temp.innerHTML = str;
-    //    return temp.value;
-    //}
-
     unescapeHTML(str) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(str, "text/html");
