@@ -6,16 +6,18 @@ class GeoCoordinatesComponent extends HTMLElement {
 
     connectedCallback() {
         this./*shadowRoot.*/innerHTML = `
-          <div class="container mt-3">
-            <div class="mb-3">
-              <label for="latitude" class="form-label">Latitude:</label>
-              <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter latitude">
+            <div class="card mt-3">
+              <div class="card-body">
+                <div class="mb-3">
+                  <label for="latitude" class="form-label">Latitude:</label>
+                  <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter latitude">
+                </div>
+                <div class="mb-3">
+                  <label for="longitude" class="form-label">Longitude:</label>
+                  <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter longitude">
+                </div>
+              </div>
             </div>
-            <div class="mb-3">
-              <label for="longitude" class="form-label">Longitude:</label>
-              <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter longitude">
-            </div>
-          </div>
         `;
 
         this.latitude = this./*shadowRoot.*/querySelector('input[name="latitude"]');

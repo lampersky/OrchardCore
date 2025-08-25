@@ -57,7 +57,7 @@ class ParentComponent extends HTMLElement {
 
 customElements.define('parent-component', ParentComponent);
 
-function init(id) {
+function init(id, pathBase) {
     window.dynamicFields = window.dynamicFields ?? {};
     window.dynamicFields[id] = (() => {
         let listeners = [];
@@ -67,10 +67,12 @@ function init(id) {
             const newValue = getValue();
             listeners.forEach(l => l.callback(newValue));
         };
+        const getPathBase = () => pathBase;
         return {
             getElement,
             getValue,
             notify,
+            getPathBase: getPathBase(),
             setValue: (newValue) => {
                 if (newValue !== getElement().value) {
                     getElement().value = newValue;

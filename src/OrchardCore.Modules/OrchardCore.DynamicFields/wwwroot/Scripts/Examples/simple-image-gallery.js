@@ -4,13 +4,23 @@ class SimpleImageGallery extends HTMLElement {
         this.seed = 50;
     }
     connectedCallback() {
+        this.parentId = this.getAttribute('dynamic-field-parent-id');
         this.innerHTML = `
-            <img src="https://picsum.photos/200" class="selected-img img-fluid rounded" data-bs-toggle="modal" data-bs-target="#imageModal">
-            <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+            <div class="position-relative d-inline-block" data-bs-toggle="modal" data-bs-target="#${this.parentId}_imageModal">
+              <div class="d-flex justify-content-center">
+                  <div class="spinner-border" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                  </div>
+              </div>
+              <img src="" class="selected-img img-fluid rounded d-none"
+                   onload="this.previousElementSibling.classList.add('d-none'); this.classList.remove('d-none');">
+            </div>
+
+            <div class="modal fade" id="${this.parentId}_imageModal" tabindex="-1" aria-labelledby="${this.parentId}_imageModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Choose Image</h5>
+                    <h5 class="modal-title" id="${this.parentId}_imageModalLabel">Choose Image</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -36,7 +46,10 @@ class SimpleImageGallery extends HTMLElement {
         });
     }
     setImage(imageUrl) {
-        this.querySelector('.selected-img').src = imageUrl;
+        const selectedImageEl = this.querySelector('.selected-img');
+        selectedImageEl.previousElementSibling.classList.remove('d-none');
+        selectedImageEl.classList.add('d-none');
+        selectedImageEl.src = `${imageUrl}?v=${new Date().toJSON()}`;
     }
     onChange(image) {
         console.log(image);
