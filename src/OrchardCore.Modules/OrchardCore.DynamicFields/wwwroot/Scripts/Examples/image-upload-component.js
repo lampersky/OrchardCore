@@ -12,7 +12,7 @@ class ImageUploadComponent extends HTMLElement {
     }
 
     connectedCallback() {
-        const { addEventListener, getValue, setValue, getPathBase } = window.dynamicFields?.[this.getAttribute('dynamic-field-parent-id')];
+        const { addEventListener, getValue, setValue, getPathBase, getElement } = window.dynamicFields?.[this.getAttribute('dynamic-field-parent-id')];
         this.setValue = setValue;
         this.getPathBase = getPathBase;
 
@@ -29,6 +29,7 @@ class ImageUploadComponent extends HTMLElement {
                 .catch(error => {
                     console.error('Can\'t upload:', error);
                 });
+            window.addEventListener("beforeunload", this.beforeUnloadHandler);
         });
 
         const slot = this.shadowRoot.querySelector('slot');
@@ -52,11 +53,22 @@ class ImageUploadComponent extends HTMLElement {
                 });
             }
         });
+        getElement().closest('form').querySelectorAll('button[type="submit"]').forEach(button => {
+            button.addEventListener('click', () => {
+                console.log('click');
+                window.removeEventListener("beforeunload", this.beforeUnloadHandler)
+            });
+        });
     }
 
     uuidv4() {
         // https://caniuse.com/getrandomvalues
         return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+    }
+
+    beforeUnloadHandler(event) {
+        event.preventDefault();
+        event.returnValue = "";
     }
 
     handleFile(event) {
