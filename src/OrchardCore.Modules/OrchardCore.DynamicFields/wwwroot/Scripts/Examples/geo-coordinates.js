@@ -24,7 +24,7 @@ class GeoCoordinatesComponent extends HTMLElement {
         const { addEventListener, getValue, setValue } = window.dynamicFields?.[this.getAttribute('dynamic-field-parent-id')];
 
         addEventListener('value', (value) => {
-            this.updateValue(getValue());
+            this.updateValue(value);
         }, { init : true });
 
         [this.latitude, this.longitude].forEach(input =>
@@ -35,7 +35,8 @@ class GeoCoordinatesComponent extends HTMLElement {
                 };
                 setValue(object);
             }));
-        // initial value is set via listener
+        // The initial value is set via a listener, alternatively, you can do this:
+        // this.updateValue(getValue());
     }
 
     updateValue(detail) {
