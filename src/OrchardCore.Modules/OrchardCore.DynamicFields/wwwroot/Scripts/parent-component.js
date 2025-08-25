@@ -54,8 +54,10 @@ class ParentComponent extends HTMLElement {
         this.setAttribute('value', JSON.stringify(newValObject));
     }
 }
-
-customElements.define('parent-component', ParentComponent);
+if (!window.customElements.get('parent-component')) {
+    window.ParentComponent = ParentComponent;
+    window.customElements.define('parent-component', ParentComponent);
+}
 
 function init(id, pathBase) {
     window.dynamicFields = window.dynamicFields ?? {};

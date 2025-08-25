@@ -149,5 +149,7 @@ class ImageUploadComponent extends HTMLElement {
         });
     }
 }
-
-customElements.define('image-upload-component', ImageUploadComponent);
+if (!window.customElements.get('image-upload-component')) {
+    window.ImageUploadComponent = ImageUploadComponent;
+    window.customElements.define('image-upload-component', ImageUploadComponent);
+}

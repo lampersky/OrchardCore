@@ -46,5 +46,7 @@ class GeoCoordinatesComponent extends HTMLElement {
         this.longitude.value = detail?.longitude;
     }
 }
-
-customElements.define('geo-coordinates', GeoCoordinatesComponent);
+if (!window.customElements.get('geo-coordinates')) {
+    window.GeoCoordinatesComponent = GeoCoordinatesComponent;
+    window.customElements.define('geo-coordinates', GeoCoordinatesComponent);
+}

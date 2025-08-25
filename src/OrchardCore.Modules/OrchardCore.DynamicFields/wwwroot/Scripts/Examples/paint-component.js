@@ -89,5 +89,7 @@ class PaintComponent extends HTMLElement {
         //dummy
     }
 }
-
-customElements.define('paint-component', PaintComponent);
+if (!window.customElements.get('paint-component')) {
+    window.PaintComponent = PaintComponent;
+    window.customElements.define('paint-component', PaintComponent);
+}

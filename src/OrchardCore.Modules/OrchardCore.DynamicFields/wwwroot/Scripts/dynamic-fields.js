@@ -39,6 +39,12 @@ function reindex(resource, index) {
     });
 }
 
+function reindexAll() {
+    document.querySelectorAll('div.resources > .resource').forEach((resource, index) => {
+        reindex(resource, index);
+    });
+}
+
 function move(button, dir) {
     const resourceToMove = button.closest('.resource');
     const itemsContainer = document.querySelector('div.resources');
@@ -52,34 +58,24 @@ function move(button, dir) {
         itemsContainer.insertBefore(children[idx + dir], resourceToMove);
     }
 
-    //todo
-    document.querySelectorAll('div.resources > .resource').forEach((resource, index) => {
-        reindex(resource, index);
-    });
+    reindexAll();
 }
 
 function removeResource(button) {
     const resourceToRemove = button.closest('.resource');
     const resources = resourceToRemove.parentElement;
     resources.removeChild(resourceToRemove);
-    for (let index = 0; index < resources.children.length; index++) {
-        reindex(resources.children[index], index);
-    }
+
+    reindexAll();
 }
 
 function addResource() {
     const template = document.getElementById('resource-template');
     const cloned = template.content.cloneNode(true);
-
     const itemsContainer = document.querySelector('div.resources');
-    const items = document.querySelectorAll('div.resources > .resource');
-
-    items.forEach((resource, index) => {
-        reindex(resource, index);
-    });
-
-    reindex(cloned, items.length);
     itemsContainer.appendChild(cloned);
+
+    reindexAll();
 }
 
 document.addEventListener('DOMContentLoaded', () => clearQueryParams());

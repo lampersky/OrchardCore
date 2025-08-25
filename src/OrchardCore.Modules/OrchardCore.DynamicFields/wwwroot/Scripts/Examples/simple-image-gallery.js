@@ -55,4 +55,7 @@ class SimpleImageGallery extends HTMLElement {
         console.log(image);
     }
 }
-customElements.define('simple-image-gallery', SimpleImageGallery);
+if (!window.customElements.get('simple-image-gallery')) {
+    window.SimpleImageGallery = SimpleImageGallery;
+    window.customElements.define('simple-image-gallery', SimpleImageGallery);
+}
