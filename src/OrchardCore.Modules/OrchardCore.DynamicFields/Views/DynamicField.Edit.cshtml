@@ -19,7 +19,7 @@
 
 <script asp-name="parent-component" at="Head" asp-src="~/OrchardCore.DynamicFields/Scripts/parent-component.js"></script>
 <script at="Head" depends-on="parent-component">
-    init(`@Html.IdFor(m => m.Value)`, `@Context.Request.PathBase.ToString()`);
+    init(`@Html.IdFor(m => m.Value)`, `@Context.Request.PathBase.ToString()`, `@culture.GetLanguageDirection()`);
 </script>
 
 @foreach (var resource in settings.Resources)

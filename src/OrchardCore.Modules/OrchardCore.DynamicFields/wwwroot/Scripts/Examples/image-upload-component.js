@@ -14,7 +14,7 @@ class ImageUploadComponent extends HTMLElement {
     connectedCallback() {
         const { addEventListener, getValue, setValue, getPathBase, getElement } = window.dynamicFields?.[this.getAttribute('dynamic-field-parent-id')];
         this.setValue = setValue;
-        this.getPathBase = getPathBase;
+        this.pathBase = getPathBase();
 
         this.fileInput = this.shadowRoot.querySelector('input[type="file"]');
         this.shadowRoot.querySelector('button').addEventListener('click', async () => {
@@ -124,7 +124,7 @@ class ImageUploadComponent extends HTMLElement {
         formData.append('__RequestVerificationToken', token);
         formData.append('files', dt.files[0]);
 
-        return fetch(`${this.getPathBase}/Admin/Media/Upload`, {
+        return fetch(`${this.pathBase}/Admin/Media/Upload`, {
             method: 'POST',
             body: formData
         })

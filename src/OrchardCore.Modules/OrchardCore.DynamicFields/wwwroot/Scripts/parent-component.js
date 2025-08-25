@@ -53,7 +53,7 @@ if (!window.customElements.get('parent-component')) {
     window.customElements.define('parent-component', ParentComponent);
 }
 
-function init(id, pathBase) {
+function init(id, pathBase, langDir) {
     window.dynamicFields = window.dynamicFields ?? {};
     window.dynamicFields[id] = (() => {
         let listeners = [];
@@ -64,11 +64,13 @@ function init(id, pathBase) {
             listeners.forEach(l => l.callback(newValue));
         };
         const getPathBase = () => pathBase;
+        const getLangDir = () => langDir;
         return {
             getElement,
             getValue,
             notify,
-            getPathBase: getPathBase(),
+            getPathBase,
+            getLangDir,
             setValue: (newValue) => {
                 if (newValue !== getElement().value) {
                     getElement().value = newValue;
