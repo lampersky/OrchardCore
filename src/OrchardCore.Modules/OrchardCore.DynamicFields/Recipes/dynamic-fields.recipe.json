@@ -1,0 +1,340 @@
+{
+  "name": "DynamicFieldsExamples",
+  "displayName": "Add a few examples of dynamic fields",
+  "description": "Adds an example content type demonstrating the capabilities of dynamic fields."
+  "author": "Lampersky",
+  "website": "https://orchardcore.net",
+  "version": "1.0.0",
+  "issetuprecipe": false,
+  "categories": [ "default" ],
+  "tags": [ "dynamic-fields", "custom-editors" ],
+  "steps": [
+    {
+      "name": "ContentDefinition",
+      "ContentTypes": [
+        {
+          "Name": "DynamicFieldsExamples",
+          "DisplayName": "DynamicFieldsExamples",
+          "Settings": {
+            "ContentTypeSettings": {
+              "Creatable": true,
+              "Listable": true,
+              "Draftable": false,
+              "Versionable": false,
+              "Securable": false
+            },
+            "FullTextAspectSettings": {
+              "IncludeFullTextTemplate": false,
+              "IncludeBodyAspect": false,
+              "IncludeDisplayText": false
+            },
+            "GraphQLContentTypeSettings": {
+              "Hidden": false
+            }
+          },
+          "ContentTypePartDefinitionRecords": [
+            {
+              "PartName": "DynamicFieldsExamples",
+              "Name": "DynamicFieldsExamples",
+              "Settings": {
+                "ContentTypePartSettings": {
+                  "Position": "0"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "ContentParts": [
+        {
+          "Name": "DynamicFieldsExamples",
+          "Settings": {},
+          "ContentPartFieldDefinitionRecords": [
+            {
+              "FieldName": "DynamicField",
+              "Name": "Leafletjs",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "Leafletjs",
+                  "Position": "0"
+                },
+                "DynamicFieldSettings": {
+                  "IndexRawValue": true,
+                  "Code": "\u003Cdiv class=\u0022map\u0022\u003E\u003C/div\u003E",
+                  "Resources": [
+                    {
+                      "Type": 1,
+                      "Src": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+                      "At": 2,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+                      "At": 2,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "(function () {\r\n    const {\r\n        getValue, \r\n        setValue, \r\n        addEventListener, \r\n        querySelector\r\n    } = window.dynamicFields.DynamicFieldsExamples_Leafletjs_Value;\r\n    \r\n    const mapContainer = querySelector(\u0027.map\u0027);\r\n    const map = L.map(mapContainer).setView([51.505, -0.09], 13);\r\n    const tiles = L.tileLayer(\u0027https://tile.openstreetmap.org/{z}/{x}/{y}.png\u0027, {\r\n        maxZoom: 19,\r\n        attribution: \u0027\u0026copy; \u003Ca href=\u0022http://www.openstreetmap.org/copyright\u0022\u003EOpenStreetMap\u003C/a\u003E\u0027\r\n    }).addTo(map);\r\n    const marker = L.marker([51.505, -0.09], { draggable: true }).addTo(map);\r\n    marker.on(\u0027dragend\u0027, function (e) {\r\n        //var savedBounds = map.getBounds();\r\n        const position = marker.getLatLng();\r\n        const savedCenter = map.getCenter();\r\n        const savedZoom = map.getZoom();\r\n        const object = {\r\n            //bounds: savedBounds,\r\n            position: position,\r\n            center: savedCenter,\r\n            zoom: savedZoom,\r\n        };\r\n        setValue(object);\r\n    });\r\n\r\n    addEventListener(\u0027value\u0027, (object) =\u003E {\r\n        const position = object.position;\r\n        const savedCenter= object.center;\r\n        const savedZoom= object.zoom;\r\n        map.setView(savedCenter, savedZoom);\r\n        marker.setLatLng(position );\r\n        //const bounds = object.bounds;\r\n        //map.fitBounds(bounds);\r\n    }, {init: true});\r\n})();",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": true,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 1,
+                      "Src": "#DynamicFieldsExamples_Leafletjs_Value .map { height: 360px; }",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": true,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "FieldName": "DynamicField",
+              "Name": "ColorPicker",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "ColorPicker",
+                  "Position": "1"
+                },
+                "DynamicFieldSettings": {
+                  "IndexRawValue": true,
+                  "Code": "\u003Chex-color-picker\u003E\u003C/hex-color-picker\u003E",
+                  "Resources": [
+                    {
+                      "Type": 0,
+                      "Src": "https://unpkg.com/vanilla-colorful?module",
+                      "At": 1,
+                      "IsModule": true,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "(function () {\r\n    const {\r\n        getValue, \r\n        setValue, \r\n        addEventListener, \r\n        querySelector\r\n    } = window.dynamicFields.DynamicFieldsExamples_ColorPicker_Value;\r\n    \r\n    const picker = querySelector(\u0027hex-color-picker\u0027);\r\n    \r\n    picker.addEventListener(\u0027color-changed\u0027, (event) =\u003E {\r\n      const newColor = event.detail.value;\r\n      const object = {\r\n        color: newColor\r\n      };\r\n      setValue(object);\r\n    });\r\n    \r\n    addEventListener(\u0027value\u0027, (object) =\u003E {\r\n        const color = object.color;\r\n        picker.color = color;\r\n        picker.setAttribute(\u0027color\u0027, color);\r\n    }, {init: true});\r\n})();",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": true,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "FieldName": "DynamicField",
+              "Name": "SimplePaint",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "SimplePaint",
+                  "Position": "2"
+                },
+                "DynamicFieldSettings": {
+                  "IndexRawValue": true,
+                  "Code": "\u003Cpaint-component\u003E\u003C/paint-component\u003E",
+                  "Resources": [
+                    {
+                      "Type": 0,
+                      "Src": "(function () {\r\n    const {\r\n        getValue, \r\n        setValue, \r\n        addEventListener, \r\n        querySelector\r\n    } = window.dynamicFields.DynamicFieldsExamples_SimplePaint_Value;\r\n\r\n    const paint = querySelector(\u0027paint-component\u0027);\r\n    paint.onChange = function(object) {\r\n        setValue(object);\r\n    };\r\n\r\n    addEventListener(\u0027value\u0027, (object) =\u003E {\r\n        if (object?.json) {\r\n            paint.loadFromJson(object?.json);\r\n        }\r\n    }, {init: true});\r\n})();",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": true,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js",
+                      "At": 2,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "~/OrchardCore.DynamicFields/Scripts/Examples/paint-component.js",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "FieldName": "DynamicField",
+              "Name": "GeoCoordinates",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "GeoCoordinates",
+                  "Position": "3"
+                },
+                "DynamicFieldSettings": {
+                  "IndexRawValue": true,
+                  "Code": "\u003Cgeo-coordinates\u003E\u003C/geo-coordinates\u003E",
+                  "Resources": [
+                    {
+                      "Type": 0,
+                      "Src": "~/OrchardCore.DynamicFields/Scripts/Examples/geo-coordinates.js",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "FieldName": "DynamicField",
+              "Name": "SimpleImageGallery",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "SimpleImageGallery",
+                  "Position": "4"
+                },
+                "DynamicFieldSettings": {
+                  "IndexRawValue": true,
+                  "Code": "\u003Csimple-image-gallery\u003E\u003C/simple-image-gallery\u003E",
+                  "Resources": [
+                    {
+                      "Type": 0,
+                      "Src": "~/OrchardCore.DynamicFields/Scripts/Examples/simple-image-gallery.js",
+                      "At": 2,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "(function () {\r\n    /* available functions */\r\n    const {\r\n        getValue, \r\n        setValue, \r\n        addEventListener, \r\n        querySelector\r\n    } = window.dynamicFields.DynamicFieldsExamples_SimpleImageGallery_Value;\r\n\r\n    const gallery = querySelector(\u0027simple-image-gallery\u0027);\r\n    gallery.onChange = (object) =\u003E {\r\n        setValue(object);\r\n    };\r\n\r\n    addEventListener(\u0027value\u0027, (object) =\u003E {\r\n        if (object?.src) {\r\n            gallery.setImage(object?.src);\r\n        }\r\n    }, {init: true});\r\n})();",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": true,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "FieldName": "DynamicField",
+              "Name": "GrapesJs",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "GrapesJs",
+                  "Position": "5"
+                },
+                "DynamicFieldSettings": {
+                  "IndexRawValue": true,
+                  "Code": "\u003Cgrapesjs-editor\u003E\u003C/grapesjs-editor\u003E",
+                  "Resources": [
+                    {
+                      "Type": 0,
+                      "Src": "/* grapesjs-editor isn\u0027t encapsulated, and autoReplaceSvg will break editor */\r\nwindow.FontAwesomeConfig = { autoReplaceSvg: \u0027nest\u0027 };",
+                      "At": 2,
+                      "IsModule": false,
+                      "IsInline": true,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 1,
+                      "Src": "https://unpkg.com/grapesjs@0.22.12/dist/css/grapes.min.css",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "https://unpkg.com/grapesjs@0.22.12/dist/grapes.min.js",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "~/OrchardCore.DynamicFields/Scripts/Examples/grapesjs-editor.js",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "(function () {\r\n    const {\r\n        getValue, \r\n        setValue, \r\n        addEventListener, \r\n        querySelector\r\n    } = window.dynamicFields.DynamicFieldsExamples_GrapesJs_Value;\r\n\r\n    const editor = querySelector(\u0027grapesjs-editor\u0027);\r\n    editor.onChange = function (object) {\r\n        setValue(object);\r\n    };\r\n    addEventListener(\u0027value\u0027, (object) =\u003E {\r\n        if (object) {\r\n            editor.loadHtmlCss(object);\r\n        }\r\n    }, {init: true});\r\n})();",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": true,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "FieldName": "DynamicField",
+              "Name": "ImageCrop",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "ImageCrop"
+                },
+                "DynamicFieldSettings": {
+                  "IndexRawValue": true,
+                  "Code": "\u003Cimage-upload-component\u003E\r\n          \u003Cstyle\u003E\r\n            image-crop {\r\n              display: block;\r\n              max-width: 400px;\r\n              max-height: 400px;\r\n              margin-bottom: 10px;\r\n            }\r\n            input[type=\u0022file\u0022] {\r\n              margin-bottom: 10px;\r\n            }\r\n          \u003C/style\u003E\r\n          \u003Cimage-crop tabindex=\u00220\u0022\u003E\u003Cdiv data-loading-slot class=\u0022loading\u0022\u003ELoading...\u003C/div\u003E\u003C/image-crop\u003E\r\n\u003C/image-upload-component\u003E",
+                  "Resources": [
+                    {
+                      "Type": 0,
+                      "Src": "https://unpkg.com/@github/image-crop-element@latest/dist/index.js",
+                      "At": 1,
+                      "IsModule": true,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "~/OrchardCore.DynamicFields/Scripts/Examples/image-upload-component.js",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
