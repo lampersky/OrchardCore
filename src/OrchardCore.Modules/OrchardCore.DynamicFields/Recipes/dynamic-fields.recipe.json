@@ -1,7 +1,7 @@
 {
   "name": "DynamicFieldsExamples",
   "displayName": "Add a few examples of dynamic fields",
-  "description": "Adds an example content type demonstrating the capabilities of dynamic fields."
+  "description": "Adds an example content type demonstrating the capabilities of dynamic fields.",
   "author": "Lampersky",
   "website": "https://orchardcore.net",
   "version": "1.0.0",
@@ -9,6 +9,12 @@
   "categories": [ "default" ],
   "tags": [ "dynamic-fields", "custom-editors" ],
   "steps": [
+    {
+      "name": "feature",
+      "enable": [
+        "OrchardCore.DynamicFields"
+      ]
+    },
     {
       "name": "ContentDefinition",
       "ContentTypes": [
