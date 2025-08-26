@@ -45,8 +45,18 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Dynami
     public override async Task<IDisplayResult> UpdateAsync(DynamicField field, UpdateFieldEditorContext context)
     {
         var model = new EditDynamicFieldViewModel();
-        await context.Updater.TryUpdateModelAsync(model, Prefix, f => f.Value);
-        field.Value = JsonSerializer.Deserialize<ExpandoObject>(model.Value);
+        await context.Updater.TryUpdateModelAsync(model, Prefix, m => m.Value);
+
+        if (model.Value != null) {
+            try
+            {
+                field.Value = JsonSerializer.Deserialize<ExpandoObject>(model.Value);
+            }
+            catch (JsonException)
+            {
+                // 
+            }
+        }
 
         return Edit(field, context);
     }

@@ -44,10 +44,16 @@
 }
 
 <div class="field field-type-dynamicfield field-name-@name">
-    <ul>
+    <div>
         @if (Model.Value != null)
         {
             RenderRecursive(Model.Value);
         }
-    </ul>
+        else
+        {
+            <pre>
+                @Html.Raw(Model.RawValue)
+            </pre>
+        }
+    </div>
 </div>
