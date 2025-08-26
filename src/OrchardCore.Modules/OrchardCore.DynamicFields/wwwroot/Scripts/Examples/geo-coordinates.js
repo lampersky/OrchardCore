@@ -5,23 +5,24 @@ class GeoCoordinatesComponent extends HTMLElement {
     }
 
     connectedCallback() {
+        this.parentId = this.getAttribute('dynamic-field-parent-id');
         this./*shadowRoot.*/innerHTML = `
             <div class="card mt-3">
               <div class="card-body">
                 <div class="mb-3">
-                  <label for="latitude" class="form-label">Latitude:</label>
-                  <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Enter latitude">
+                  <label for="${this.parentId}_latitude" class="form-label">Latitude:</label>
+                  <input type="text" class="form-control" id="${this.parentId}_latitude" placeholder="Enter latitude">
                 </div>
                 <div class="mb-3">
-                  <label for="longitude" class="form-label">Longitude:</label>
-                  <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Enter longitude">
+                  <label for="${this.parentId}_longitude" class="form-label">Longitude:</label>
+                  <input type="text" class="form-control" id="${this.parentId}_longitude" placeholder="Enter longitude">
                 </div>
               </div>
             </div>
         `;
 
-        this.latitude = this./*shadowRoot.*/querySelector('input[name="latitude"]');
-        this.longitude = this./*shadowRoot.*/querySelector('input[name="longitude"]');
+        this.latitude = this./*shadowRoot.*/querySelector(`input#${this.parentId}_latitude`);
+        this.longitude = this./*shadowRoot.*/querySelector(`input#${this.parentId}_longitude`);
 
         const { addEventListener, getValue, setValue } = window.dynamicFields?.[this.getAttribute('dynamic-field-parent-id')];
 

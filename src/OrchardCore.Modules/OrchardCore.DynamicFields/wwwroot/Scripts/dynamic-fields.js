@@ -57,6 +57,7 @@ function init(id, pathBase, langDir) {
     window.dynamicFields = window.dynamicFields ?? {};
     window.dynamicFields[id] = (() => {
         let listeners = [];
+        let contentPreviewEnabled = true;
         const getElement = () => document.getElementById(id);
         const getValue = () => getElement().value;
         const notify = () => {
@@ -73,9 +74,14 @@ function init(id, pathBase, langDir) {
             getPathBase,
             getLangDir,
             getParentId,
+            isContentPreviewEnabled: () => contentPreviewEnabled,
+            setContentPreviewEnabled: (v) => { contentPreviewEnabled = v; },
             setValue: (newValue) => {
                 if (newValue !== getElement().value) {
                     getElement().value = newValue;
+                    if (contentPreviewEnabled) {
+                        document.dispatchEvent(new CustomEvent('contentpreview:render'));
+                    }
                 }
             },
             querySelector: (selector) => getElement().querySelector(selector),
