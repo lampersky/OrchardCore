@@ -58,7 +58,7 @@
 
 <div class="mb-3">
     <a class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-        Do you need help?
+        @T["Do you need help?"]
     </a>
 
     <div class="collapse mt-3" id="collapseExample">
@@ -92,7 +92,7 @@
     <div class="form-check">
         <input asp-for="IndexRawValue" type="checkbox" class="form-check-input">
         <label class="form-check-label" asp-for="IndexRawValue">@T["Index RAW Value"]</label>
-        <span class="hint dashed">@T["Whether a raw JSON value is indexed."]</span>
+        <span class="hint dashed">@T["Whether a raw JSON value is indexed (without flattening)."]</span>
     </div>
 </div>
 
