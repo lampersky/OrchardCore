@@ -65,12 +65,14 @@ function init(id, pathBase, langDir) {
         };
         const getPathBase = () => pathBase;
         const getLangDir = () => langDir;
+        const getParentId = () => id;
         return {
             getElement,
             getValue,
             notify,
             getPathBase,
             getLangDir,
+            getParentId,
             setValue: (newValue) => {
                 if (newValue !== getElement().value) {
                     getElement().value = newValue;

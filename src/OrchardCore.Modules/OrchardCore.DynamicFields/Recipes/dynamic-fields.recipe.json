@@ -65,7 +65,7 @@
                   "Position": "0"
                 },
                 "DynamicFieldSettings": {
-                  "IndexRawValue": true,
+                  "IndexRawValue": false,
                   "Code": "\u003Cdiv class=\u0022map\u0022\u003E\u003C/div\u003E",
                   "Resources": [
                     {
@@ -328,6 +328,48 @@
                     {
                       "Type": 0,
                       "Src": "~/OrchardCore.DynamicFields/Scripts/Examples/image-upload-component.js",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "FieldName": "DynamicField",
+              "Name": "ColorisJs",
+              "Settings": {
+                "ContentPartFieldSettings": {
+                  "DisplayName": "ColorisJs"
+                },
+                "DynamicFieldSettings": {
+                  "IndexRawValue": true,
+                  "Code": "\u003Cinput type=\u0022text\u0022 data-coloris\u003E",
+                  "Resources": [
+                    {
+                      "Type": 0,
+                      "Src": "(function () {\r\n    const {\r\n        setValue, \r\n        addEventListener, \r\n        querySelector,\r\n        getParentId\r\n    } = window.dynamicFields.DynamicFieldsExamples_ColorisJs_Value;\r\n\r\n    const coloris = querySelector(\u0027input[data-coloris]\u0027);\r\n    coloris.id = \u0060${getParentId()}_coloris\u0060;\r\n    \r\n    coloris.addEventListener(\u0027input\u0027, event =\u003E {\r\n        if (event.target.value === \u0022\u0022) {\r\n            setValue({ color: null});\r\n        } else {\r\n            setValue({ color: event.target.value});\r\n        }\r\n    });\r\n\r\n    addEventListener(\u0027value\u0027, (object) =\u003E {\r\n        coloris.value = object?.color;\r\n    }, {init: true});\r\n})();",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": true,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 1,
+                      "Src": "https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css",
+                      "At": 1,
+                      "IsModule": false,
+                      "IsInline": false,
+                      "IsDeferred": false,
+                      "IsAsync": false
+                    },
+                    {
+                      "Type": 0,
+                      "Src": "https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js",
                       "At": 1,
                       "IsModule": false,
                       "IsInline": false,

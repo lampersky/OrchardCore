@@ -46,7 +46,7 @@ class ImageUploadComponent extends HTMLElement {
                         this.lastCrop = { x, y, width, height };
                     });
                     addEventListener('value', (value) => {
-                        if (this.cropElement) {
+                        if (this.cropElement && value?.mediaPath) {
                             this.cropElement.src = '/media/' + value.mediaPath;
                         }
                     }, { init: true });
