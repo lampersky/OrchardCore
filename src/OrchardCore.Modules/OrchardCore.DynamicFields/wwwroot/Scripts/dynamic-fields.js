@@ -1,4 +1,4 @@
-class ParentComponent extends HTMLElement {
+class DynamicFields extends HTMLElement {
     static formAssociated = true;
 
     constructor() {
@@ -48,9 +48,9 @@ class ParentComponent extends HTMLElement {
         this.setAttribute('value', JSON.stringify(newValObject));
     }
 }
-if (!window.customElements.get('parent-component')) {
-    window.ParentComponent = ParentComponent;
-    window.customElements.define('parent-component', ParentComponent);
+if (!window.customElements.get('dynamic-fields')) {
+    window.DynamicFields = DynamicFields;
+    window.customElements.define('dynamic-fields', DynamicFields);
 }
 
 function init(id, pathBase, langDir) {

@@ -73,7 +73,6 @@ public class DynamicFieldIndexProvider : ContentFieldIndexProvider
                     .GetContentFields<DynamicField>(contentItem)
                     .SelectMany(pair => {
                         var result = new List<DynamicFieldIndex> { };
-
                         var settings = pair.Definition.GetSettings<DynamicFieldSettings>();
 
                         if (settings.IndexRawValue)

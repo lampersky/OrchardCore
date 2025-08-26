@@ -11,14 +11,14 @@
     <label asp-for="Value" class="@Orchard.GetLabelClasses(inputRequired: false)">@Model.PartFieldDefinition.DisplayName()</label>
     <div class="@Orchard.GetEndClasses()">
         <span asp-validation-for="Value"></span>
-        <parent-component asp-for="Value">
+        <dynamic-fields asp-for="Value">
             @Html.Raw(settings.Code)
-        </parent-component>
+        </dynamic-fields>
     </div>
 </div>
 
-<script asp-name="parent-component" at="Head" asp-src="~/OrchardCore.DynamicFields/Scripts/parent-component.js"></script>
-<script at="Head" depends-on="parent-component">
+<script asp-name="dynamic-fields" at="Head" asp-src="~/OrchardCore.DynamicFields/Scripts/dynamic-fields.js"></script>
+<script at="Head" depends-on="dynamic-fields">
     init(`@Html.IdFor(m => m.Value)`, `@Context.Request.PathBase.ToString()`, `@culture.GetLanguageDirection()`);
 </script>
 
@@ -28,7 +28,7 @@
     {
         if (resource.Type == ResourceType.Script)
         {
-            <script depends-on="parent-component" at="@resource.At" type="@resource.ScriptType" defer="@resource.IsDeferred" async="@resource.IsAsync">
+            <script depends-on="dynamic-fields" at="@resource.At" type="@resource.ScriptType" defer="@resource.IsDeferred" async="@resource.IsAsync">
                 @Html.Raw(resource.Src)
             </script>
         }
@@ -43,7 +43,7 @@
     {
         if (resource.Type == ResourceType.Script)
         {
-            <script depends-on="parent-component" at="@resource.At" asp-src="@resource.Src" type="@resource.ScriptType" defer="@resource.IsDeferred" async="@resource.IsAsync"></script>
+            <script depends-on="dynamic-fields" at="@resource.At" asp-src="@resource.Src" type="@resource.ScriptType" defer="@resource.IsDeferred" async="@resource.IsAsync"></script>
         }
         else if (resource.Type == ResourceType.Style)
         {

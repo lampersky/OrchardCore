@@ -1,6 +1,4 @@
 using Fluid;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
@@ -30,15 +28,5 @@ public class Startup : StartupBase
 
         services.AddTagHelpers<ExtendedScriptTagHelper>();
         services.AddTagHelpers<CustomAspForHelper>();
-    }
-
-    public override void Configure(IApplicationBuilder builder, IEndpointRouteBuilder routes, IServiceProvider serviceProvider)
-    {
-        routes.MapAreaControllerRoute(
-            name: "Home",
-            areaName: "OrchardCore.DynamicFields",
-            pattern: "Home/Index",
-            defaults: new { controller = "Home", action = "Index" }
-        );
     }
 }

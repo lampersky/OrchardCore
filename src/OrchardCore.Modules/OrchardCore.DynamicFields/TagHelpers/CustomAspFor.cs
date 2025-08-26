@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace OrchardCore.DynamicFields.TagHelpers;
 
-[HtmlTargetElement("parent-component", Attributes = ForAttributeName)]
+[HtmlTargetElement("dynamic-fields", Attributes = ForAttributeName)]
 public class CustomAspForHelper : InputTagHelper {
     private const string ForAttributeName = "asp-for";
 
