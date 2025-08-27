@@ -42,9 +42,9 @@ class GeoCoordinatesComponent extends HTMLElement {
         // this.updateValue(getValue());
     }
 
-    updateValue(detail) {
-        this.latitude.value = detail?.latitude;
-        this.longitude.value = detail?.longitude;
+    updateValue(object) {
+        this.latitude.value = object?.latitude;
+        this.longitude.value = object?.longitude;
     }
 }
 if (!window.customElements.get('geo-coordinates')) {

@@ -73,7 +73,7 @@ class GrapesJsEditor extends HTMLElement {
             this.objectToLoad = object;
         }
     }
-    onChange(image) {
+    onChange(object) {
         // leave it empty
     }
 }
