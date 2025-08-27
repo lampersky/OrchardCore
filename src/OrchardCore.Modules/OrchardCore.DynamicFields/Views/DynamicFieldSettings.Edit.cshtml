@@ -124,11 +124,8 @@
         {
             @Html.EditorFor(m => m.Resources)
         }
-        else
-        {
-            <span class="badge text-bg-warning">@T["No resources have been added yet!"]</span>
-        }
     </div>
+    <span class="badge text-bg-warning no-resources">@T["No resources have been added yet!"]</span>
 </div>
 
 <style asp-name="dynamic-fields" at="Head" asp-src="~/OrchardCore.DynamicFields/Styles/dynamic-fields-settings.css"></style>
