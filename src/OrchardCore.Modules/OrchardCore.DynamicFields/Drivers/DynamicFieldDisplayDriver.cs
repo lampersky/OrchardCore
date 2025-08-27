@@ -6,6 +6,8 @@ using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.DynamicFields.Fields;
 using OrchardCore.DynamicFields.ViewModels;
+using OrchardCore.ContentManagement.Metadata.Models;
+using OrchardCore.Mvc.ModelBinding;
 
 namespace OrchardCore.DynamicFields.Drivers;
 
@@ -54,7 +56,7 @@ public sealed class DynamicFieldDisplayDriver : ContentFieldDisplayDriver<Dynami
             }
             catch (JsonException)
             {
-                // 
+                context.Updater.ModelState.AddModelError(Prefix, nameof(field.Value), S["The value provided is not valid JSON for {0}.", context.PartFieldDefinition.DisplayName()]);
             }
         }
 
