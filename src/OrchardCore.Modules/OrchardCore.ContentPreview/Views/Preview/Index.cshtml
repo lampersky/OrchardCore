@@ -102,11 +102,11 @@
 
             $.post(renderPreviewUrl, formData)
                 .done(function (data) {
+                    previewRenderData = data;
                     if (iframe && iframe.contentWindow) {
                         iframe.contentWindow.document.open();
                         iframe.contentWindow.document.write(data);
                         iframe.contentWindow.document.close();
-                        previewRenderData = data;
                     }
                     $(serverErrorWarning).hide();
                 })

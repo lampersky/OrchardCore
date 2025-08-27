@@ -27,11 +27,12 @@ $(function () {
     previewId = $(document.getElementById('previewId')).data('value');
     previewContentItemId = $(document.getElementById('previewContentItemId')).data('value');
     previewContentItemVersionId = $(document.getElementById('previewContentItemVersionId')).data('value');
-    form = $(previewButton).closest('form');
+    form = previewButton.closest('form');
+    // jQuery serializeArray do not include form-associated custom elements
+    const serializeArray = (form) => [...new FormData(form)].map(([name, value]) => ({ name, value }));
 
     sendFormData = function () {
-
-        formData = form.serializeArray(); // convert form to array
+        formData = serializeArray(form); // convert form to array
         formData.push({ name: "ContentItemType", value: contentItemType });
         formData.push({ name: "PreviewId", value: previewId });
         formData.push({ name: "PreviewContentItemId", value: previewContentItemId });
