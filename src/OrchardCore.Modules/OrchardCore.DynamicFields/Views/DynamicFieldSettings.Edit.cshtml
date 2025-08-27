@@ -4,7 +4,7 @@
 @using OrchardCore.DynamicFields.Settings
 @using OrchardCore.DynamicFields.ViewModels
 @using OrchardCore.ResourceManagement
-@model OrchardCore.DynamicFields.Settings.DynamicFieldSettings
+@model OrchardCore.DynamicFields.ViewModels.EditDynamicFieldSettingsViewModel
 @inject IContentDefinitionManager ContentDefinitionManager
 
 @{
@@ -107,9 +107,10 @@
 <template id="resource-template">
     @{
         /* variable name Capitalized intentionally */
-        var Resources = new[] { new Resource() };
+        /* we are using dict, because binder do not allow gaps in lists */
+        Dictionary<int, Resource> Resources = new() { { 0, new Resource() } };
     }
-    @Html.EditorFor(_ => Resources)
+    @Html.EditorFor(_ => Resources[0])
 </template>
 
 <div class="mb-3">
@@ -122,7 +123,10 @@
     <div class="resources">
         @if (Model.Resources.Any())
         {
-            @Html.EditorFor(m => m.Resources)
+            @foreach (var kvp in Model.Resources.OrderBy(x => x.Key))
+            {
+                @Html.EditorFor(m => Model.Resources[kvp.Key])
+            }
         }
     </div>
     <span class="badge text-bg-warning no-resources">@T["No resources have been added yet!"]</span>

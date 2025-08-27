@@ -24,11 +24,20 @@ function onResourceTypeChange(input) {
     });
 }
 
+function getLastIndex() {
+    return Array.from(document.querySelectorAll('div.resources > .resource input')).reduce((max, input) => {
+        const matches = input.id?.match(/(?:_(\d+)_)/);
+        if (matches) {
+            const found = parseInt(matches[1], 10);
+            return Math.max(max, found);
+        }
+        return max;
+    }, 0);
+}
+
 function reindex(resource, index) {
     const elements = resource.querySelectorAll('input, select, textarea, label');
     elements.forEach((element) => {
-        // name -> /(?:\[(\d+)\])/
-        // id   -> /(?:_(\d+)_)/
         if (element.hasAttribute('for')) {
             const newFor = element.getAttribute('for').replace(/(?:_(\d+)_)/, (match, offset) => `_${index}_`);
             element.setAttribute('for', newFor);
@@ -40,8 +49,17 @@ function reindex(resource, index) {
 }
 
 function reindexAll() {
-    document.querySelectorAll('div.resources > .resource').forEach((resource, index) => {
+    const resourcesContainer = document.querySelector('div.resources');
+    const resources = document.querySelectorAll('div.resources > .resource');
+    resources.forEach((resource, index) => {
+        // detach element, to avoid trigerring radio button states, when there is name collision
+        resource.remove();
+        // change name, id, for
         reindex(resource, index);
+    });
+    resources.forEach((resource) => {
+        // attach elements back
+        resourcesContainer.appendChild(resource);
     });
 }
 
@@ -73,6 +91,9 @@ function addResource() {
     const template = document.getElementById('resource-template');
     const cloned = template.content.cloneNode(true);
     const itemsContainer = document.querySelector('div.resources');
+
+    reindex(cloned, getLastIndex() + 1);
+
     itemsContainer.appendChild(cloned);
 
     reindexAll();

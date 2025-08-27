@@ -6,6 +6,7 @@ using OrchardCore.DisplayManagement.Handlers;
 using OrchardCore.DisplayManagement.Views;
 using OrchardCore.DynamicFields.Extensions;
 using OrchardCore.DynamicFields.Fields;
+using OrchardCore.DynamicFields.ViewModels;
 
 namespace OrchardCore.DynamicFields.Settings;
 
@@ -23,19 +24,29 @@ public sealed class DynamicFieldSettingsDisplayDriver(
             partFieldDefinition.PartDefinition.Name,
             partFieldDefinition.Name);
 
-        return Initialize<DynamicFieldSettings>("DynamicFieldSettings_Edit", model =>
+        return Initialize<EditDynamicFieldSettingsViewModel>("DynamicFieldSettings_Edit", model =>
         {
             var settings = templateSettings ?? partFieldDefinition.GetSettings<DynamicFieldSettings>();
             model.Code = settings.Code;
-            model.Resources = settings.Resources;
+            model.IndexRawValue = settings.IndexRawValue;
+            model.Resources = settings.Resources.Select((item, index) => new { item, index }).ToDictionary(x => x.index, x => x.item);
         }).Location("Content");
     }
 
     public override async Task<IDisplayResult> UpdateAsync(ContentPartFieldDefinition partFieldDefinition, UpdatePartFieldEditorContext context)
     {
-        var model = new DynamicFieldSettings();
+        var model = new EditDynamicFieldSettingsViewModel();
         await context.Updater.TryUpdateModelAsync(model, Prefix);
-        context.Builder.WithSettings(model);
+
+        var settings = new DynamicFieldSettings()
+        {
+            Code = model.Code,
+            IndexRawValue = model.IndexRawValue,
+            Resources = model.Resources.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToList(),
+        };
+
+
+        context.Builder.WithSettings(settings);
 
         return Edit(partFieldDefinition, context);
     }

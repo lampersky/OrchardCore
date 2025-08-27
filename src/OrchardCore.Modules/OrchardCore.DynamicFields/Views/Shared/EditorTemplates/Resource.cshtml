@@ -11,7 +11,7 @@
         <div class="mb-1 px-3">
             <h6 class="dropdown-header">@T["Resource type"]</h6>
             <div class="form-check">
-                <input class="form-check-input" type="radio" asp-for="Type" id="@Html.IdFor(m => m.Type)_script" value="@ResourceType.Script" onclick="onResourceTypeChange(this)">
+                <input class="form-check-input" type="radio" asp-for="Type" id="@Html.IdFor(m => m.Type)_script" value="@ResourceType.Script" onclick="onResourceTypeChange(this)" checked>
                 <label class="form-check-label" for="@Html.IdFor(m => m.Type)_script">
                     @T["Script"]
                 </label>
@@ -29,14 +29,14 @@
         <div class="mb-1 px-3">
             <h6 class="dropdown-header">@T["Resource placement"]</h6>
             <div class="form-check">
-                <input class="form-check-input" type="radio" asp-for="At" id="@Html.IdFor(m => m.Type)_foot" value="@ResourceLocation.Foot">
-                <label class="form-check-label" for="@Html.IdFor(m => m.Type)_foot">
+                <input class="form-check-input" type="radio" asp-for="At" id="@Html.IdFor(m => m.At)_foot" value="@ResourceLocation.Foot" checked>
+                <label class="form-check-label" for="@Html.IdFor(m => m.At)_foot">
                     @T["Foot"]
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" asp-for="At" id="@Html.IdFor(m => m.Type)_head" value="@ResourceLocation.Head">
-                <label class="form-check-label" for="@Html.IdFor(m => m.Type)_head">
+                <input class="form-check-input" type="radio" asp-for="At" id="@Html.IdFor(m => m.At)_head" value="@ResourceLocation.Head">
+                <label class="form-check-label" for="@Html.IdFor(m => m.At)_head">
                     @T["Head"]
                 </label>
             </div>
