@@ -1,12 +1,13 @@
-class GeoCoordinatesComponent extends HTMLElement {
-    constructor() {
-        super();
-        /*this.attachShadow({ mode: 'open' });*/
-    }
+if (!window.GeoCoordinatesComponent) {
+    window.GeoCoordinatesComponent = class GeoCoordinatesComponent extends HTMLElement {
+        constructor() {
+            super();
+            /*this.attachShadow({ mode: 'open' });*/
+        }
 
-    connectedCallback() {
-        this.parentId = this.getAttribute('dynamic-field-parent-id');
-        this./*shadowRoot.*/innerHTML = `
+        connectedCallback() {
+            this.parentId = this.getAttribute('dynamic-field-parent-id');
+            this./*shadowRoot.*/innerHTML = `
             <div class="card mt-3">
               <div class="card-body">
                 <div class="mb-3">
@@ -21,33 +22,33 @@ class GeoCoordinatesComponent extends HTMLElement {
             </div>
         `;
 
-        this.latitude = this./*shadowRoot.*/querySelector(`input#${this.parentId}_latitude`);
-        this.longitude = this./*shadowRoot.*/querySelector(`input#${this.parentId}_longitude`);
+            this.latitude = this./*shadowRoot.*/querySelector(`input#${this.parentId}_latitude`);
+            this.longitude = this./*shadowRoot.*/querySelector(`input#${this.parentId}_longitude`);
 
-        const { addEventListener, getValue, setValue } = window.dynamicFields?.[this.getAttribute('dynamic-field-parent-id')];
+            const { addEventListener, getValue, setValue } = window.dynamicFields?.[this.getAttribute('dynamic-field-parent-id')];
 
-        addEventListener('value', (value) => {
-            this.updateValue(value);
-        }, { init : true });
+            addEventListener('value', (value) => {
+                this.updateValue(value);
+            }, { init: true });
 
-        [this.latitude, this.longitude].forEach(input =>
-            input.addEventListener('input', () => {
-                const object = {
-                    latitude: this.latitude.value,
-                    longitude: this.longitude.value,
-                };
-                setValue(object);
-            }));
-        /* The initial value is set via a listener, alternatively, you can do this: */
-        // this.updateValue(getValue());
-    }
+            [this.latitude, this.longitude].forEach(input =>
+                input.addEventListener('input', () => {
+                    const object = {
+                        latitude: this.latitude.value,
+                        longitude: this.longitude.value,
+                    };
+                    setValue(object);
+                }));
+            /* The initial value is set via a listener, alternatively, you can do this: */
+            // this.updateValue(getValue());
+        }
 
-    updateValue(object) {
-        this.latitude.value = object?.latitude;
-        this.longitude.value = object?.longitude;
+        updateValue(object) {
+            this.latitude.value = object?.latitude;
+            this.longitude.value = object?.longitude;
+        }
     }
 }
 if (!window.customElements.get('geo-coordinates')) {
-    window.GeoCoordinatesComponent = GeoCoordinatesComponent;
-    window.customElements.define('geo-coordinates', GeoCoordinatesComponent);
+    window.customElements.define('geo-coordinates', window.GeoCoordinatesComponent);
 }

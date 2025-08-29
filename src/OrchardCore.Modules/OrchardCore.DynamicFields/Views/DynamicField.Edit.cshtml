@@ -26,18 +26,20 @@
 {
     if (resource.IsInline)
     {
-        if (resource.Type == ResourceType.Script)
-        {
-            <script depends-on="dynamic-fields" at="@resource.At" type="@resource.ScriptType" defer="@resource.IsDeferred" async="@resource.IsAsync">
-                @Html.Raw(resource.Src)
-            </script>
-        }
-        else if (resource.Type == ResourceType.Style)
-        {
-            <style at="@resource.At">
-                @Html.Raw(resource.Src)
-            </style>
-        }
+        <render-once key="@resource.Hash">
+            @if (resource.Type == ResourceType.Script)
+            {
+                <script depends-on="dynamic-fields" at="@resource.At" type="@resource.ScriptType" defer="@resource.IsDeferred" async="@resource.IsAsync">
+                    @Html.Raw(resource.Src)
+                </script>
+            }
+            else if (resource.Type == ResourceType.Style)
+            {
+                <style at="@resource.At">
+                    @Html.Raw(resource.Src)
+                </style>
+            }
+        </render-once>
     }
     else
     {

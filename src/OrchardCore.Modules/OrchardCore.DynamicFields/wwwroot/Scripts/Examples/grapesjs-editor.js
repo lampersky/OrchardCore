@@ -1,10 +1,11 @@
-class GrapesJsEditor extends HTMLElement {
-    constructor() {
-        super();
-    }
-    connectedCallback() {
-        this.parentId = this.getAttribute('dynamic-field-parent-id');
-        this.innerHTML = `
+if (!window.GrapesJsEditor) {
+    window.GrapesJsEditor = class GrapesJsEditor extends HTMLElement {
+        constructor() {
+            super();
+        }
+        connectedCallback() {
+            this.parentId = this.getAttribute('dynamic-field-parent-id');
+            this.innerHTML = `
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#${this.parentId}_editorModal">
                 Open GrapesJS Editor
             </button>
@@ -28,56 +29,56 @@ class GrapesJsEditor extends HTMLElement {
                 </div>
             </div>
         `;
-        this.init();
-    }
-    init() {
-        const modalEl = document.getElementById(`${this.parentId}_editorModal`);
-        modalEl.addEventListener('shown.bs.modal', () => {
-            if (!this.editor) {
-                this.editor = grapesjs.init({
-                    container: document.getElementById(`${this.parentId}_gjs`),
-                    height: '100%',
-                    fromElement: true,
-                    storageManager: false,
-                });
-                if (this.objectToLoad) {
-                    this.loadHtmlCss(this.objectToLoad);
-                    this.objectToLoad = null;
-                }
-            } else {
-                this.editor.render();
-            }
-        });
-        const saveState = (object) => {
-            this.onChange(object);
-        };
-        modalEl.querySelector(`#${this.parentId}_saveBtn`).addEventListener('click', (e) => {
-            if (this.editor) {
-                const html = this.editor.getHtml();
-                const css = this.editor.getCss();
-                const object = {
-                    html,
-                    css
-                };
-
-                saveState(object);
-            }            
-        });
-    }
-    loadHtmlCss(object) {
-        if (this.editor) {
-            const { html, css } = object;
-            this.editor.setComponents(html);
-            this.editor.setStyle(css);
-        } else {
-            this.objectToLoad = object;
+            this.init();
         }
-    }
-    onChange(object) {
-        // leave it empty
+        init() {
+            const modalEl = document.getElementById(`${this.parentId}_editorModal`);
+            modalEl.addEventListener('shown.bs.modal', () => {
+                if (!this.editor) {
+                    this.editor = grapesjs.init({
+                        container: document.getElementById(`${this.parentId}_gjs`),
+                        height: '100%',
+                        fromElement: true,
+                        storageManager: false,
+                    });
+                    if (this.objectToLoad) {
+                        this.loadHtmlCss(this.objectToLoad);
+                        this.objectToLoad = null;
+                    }
+                } else {
+                    this.editor.render();
+                }
+            });
+            const saveState = (object) => {
+                this.onChange(object);
+            };
+            modalEl.querySelector(`#${this.parentId}_saveBtn`).addEventListener('click', (e) => {
+                if (this.editor) {
+                    const html = this.editor.getHtml();
+                    const css = this.editor.getCss();
+                    const object = {
+                        html,
+                        css
+                    };
+
+                    saveState(object);
+                }
+            });
+        }
+        loadHtmlCss(object) {
+            if (this.editor) {
+                const { html, css } = object;
+                this.editor.setComponents(html);
+                this.editor.setStyle(css);
+            } else {
+                this.objectToLoad = object;
+            }
+        }
+        onChange(object) {
+            // leave it empty
+        }
     }
 }
 if (!window.customElements.get('grapesjs-editor')) {
-    window.GrapesJsEditor = GrapesJsEditor;
-    window.customElements.define('grapesjs-editor', GrapesJsEditor);
+    window.customElements.define('grapesjs-editor', window.GrapesJsEditor);
 }

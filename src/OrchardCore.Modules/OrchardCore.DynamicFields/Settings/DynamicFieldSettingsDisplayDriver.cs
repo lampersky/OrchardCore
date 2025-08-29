@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using OrchardCore.ContentManagement.Metadata;
 using OrchardCore.ContentManagement.Metadata.Models;
@@ -42,12 +44,22 @@ public sealed class DynamicFieldSettingsDisplayDriver(
         {
             Code = model.Code,
             IndexRawValue = model.IndexRawValue,
-            Resources = model.Resources.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToList(),
+            Resources = model.Resources
+                .OrderBy(kvp => kvp.Key)
+                .Select(kvp => {
+                    kvp.Value.Hash = ComputeHash(kvp.Value.Src);
+                    return kvp.Value;
+                })
+                .ToList(),
         };
-
 
         context.Builder.WithSettings(settings);
 
         return Edit(partFieldDefinition, context);
+    }
+
+    private static string ComputeHash(string input)
+    {
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(input)));
     }
 }

@@ -1,9 +1,10 @@
-class PaintComponent extends HTMLElement {
-    constructor() {
-        super();
-        const shadow = this.attachShadow({ mode: 'open' });
+if (!window.PaintComponent) {
+    window.PaintComponent = class PaintComponent extends HTMLElement {
+        constructor() {
+            super();
+            const shadow = this.attachShadow({ mode: 'open' });
 
-        shadow.innerHTML = `
+            shadow.innerHTML = `
           <style>
             canvas {
               border: 1px solid #ccc;
@@ -32,64 +33,64 @@ class PaintComponent extends HTMLElement {
             </div>
           </div>
         `;
-    }
+        }
 
-    connectedCallback() {
-        const shadow = this.shadowRoot;
-        const canvasEl = shadow.getElementById('canvas');
-        const clearBtn = shadow.getElementById('clearBtn');
-        const colorPicker = shadow.getElementById('colorPicker');
-        this.loadingFromJson = false;
+        connectedCallback() {
+            const shadow = this.shadowRoot;
+            const canvasEl = shadow.getElementById('canvas');
+            const clearBtn = shadow.getElementById('clearBtn');
+            const colorPicker = shadow.getElementById('colorPicker');
+            this.loadingFromJson = false;
 
-        this.canvas = new fabric.Canvas(canvasEl);
-        this.canvas.isDrawingMode = true;
-        this.canvas.freeDrawingBrush.width = 3;
-        this.canvas.freeDrawingBrush.color = colorPicker.value;
+            this.canvas = new fabric.Canvas(canvasEl);
+            this.canvas.isDrawingMode = true;
+            this.canvas.freeDrawingBrush.width = 3;
+            this.canvas.freeDrawingBrush.color = colorPicker.value;
 
-        const saveState = () => {
-            if (this.loadingFromJson) {
-                return;
-            }
-            const json = this.canvas.toJSON();
-            const dataURL = this.canvas.toDataURL({
-                format: 'png',
-                quality: 1.0
-            });
+            const saveState = () => {
+                if (this.loadingFromJson) {
+                    return;
+                }
+                const json = this.canvas.toJSON();
+                const dataURL = this.canvas.toDataURL({
+                    format: 'png',
+                    quality: 1.0
+                });
 
-            const object = {
-                json,
-                dataURL
+                const object = {
+                    json,
+                    dataURL
+                };
+
+                this.onChange(object);
             };
 
-            this.onChange(object);
-        };
+            this.canvas.on('object:added', saveState);
+            this.canvas.on('object:modified', saveState);
+            this.canvas.on('object:removed', saveState);
 
-        this.canvas.on('object:added', saveState);
-        this.canvas.on('object:modified', saveState);
-        this.canvas.on('object:removed', saveState);
+            colorPicker.addEventListener('input', () => {
+                this.canvas.freeDrawingBrush.color = colorPicker.value;
+            });
 
-        colorPicker.addEventListener('input', () => {
-            this.canvas.freeDrawingBrush.color = colorPicker.value;
-        });
+            clearBtn.addEventListener('click', () => {
+                this.canvas.clear();
+            });
+        }
 
-        clearBtn.addEventListener('click', () => {
-            this.canvas.clear();
-        });
-    }
+        loadFromJson(json) {
+            this.loadingFromJson = true;
+            this.canvas.loadFromJSON(json, () => {
+                this.canvas.renderAll();
+                this.loadingFromJson = false;
+            });
+        }
 
-    loadFromJson(json) {
-        this.loadingFromJson = true;
-        this.canvas.loadFromJSON(json, () => {
-            this.canvas.renderAll();
-            this.loadingFromJson = false;
-        });
-    }
-
-    onChange(object) {
-        // leave it empty
+        onChange(object) {
+            // leave it empty
+        }
     }
 }
 if (!window.customElements.get('paint-component')) {
-    window.PaintComponent = PaintComponent;
-    window.customElements.define('paint-component', PaintComponent);
+    window.customElements.define('paint-component', window.PaintComponent);
 }

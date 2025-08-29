@@ -30,6 +30,7 @@ public class Resource
 
     public ResourceType Type { get; set; } = ResourceType.Script;
     public string Src { get; set; }
+    public string Hash { get; set; }
     public ResourceLocation At { get; set; } = ResourceLocation.Foot;
 
     [BindingBehavior(BindingBehavior.Optional)]

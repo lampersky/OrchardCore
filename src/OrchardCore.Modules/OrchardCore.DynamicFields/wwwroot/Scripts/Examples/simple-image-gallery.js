@@ -1,11 +1,12 @@
-class SimpleImageGallery extends HTMLElement {
-    constructor() {
-        super();
-        this.seed = 50;
-    }
-    connectedCallback() {
-        this.parentId = this.getAttribute('dynamic-field-parent-id');
-        this.innerHTML = `
+if (!window.SimpleImageGallery) {
+    window.SimpleImageGallery = class SimpleImageGallery extends HTMLElement {
+        constructor() {
+            super();
+            this.seed = 50;
+        }
+        connectedCallback() {
+            this.parentId = this.getAttribute('dynamic-field-parent-id');
+            this.innerHTML = `
             <div class="position-relative d-inline-block" data-bs-toggle="modal" data-bs-target="#${this.parentId}_imageModal">
               <div class="d-flex justify-content-center">
                   <div class="spinner-border" role="status">
@@ -38,24 +39,24 @@ class SimpleImageGallery extends HTMLElement {
             </div>
             </div>
         `;
-        const saveState = (src) => {
-            this.onChange({ src });
-        };
-        this.querySelectorAll('.gallery-img').forEach(img => {
-            img.addEventListener('click', (e) => saveState(e.target.src));
-        });
-    }
-    setImage(imageUrl) {
-        const selectedImageEl = this.querySelector('.selected-img');
-        selectedImageEl.previousElementSibling.classList.remove('d-none');
-        selectedImageEl.classList.add('d-none');
-        selectedImageEl.src = `${imageUrl}?v=${new Date().toJSON()}`;
-    }
-    onChange(image) {
-        // leave it empty
+            const saveState = (src) => {
+                this.onChange({ src });
+            };
+            this.querySelectorAll('.gallery-img').forEach(img => {
+                img.addEventListener('click', (e) => saveState(e.target.src));
+            });
+        }
+        setImage(imageUrl) {
+            const selectedImageEl = this.querySelector('.selected-img');
+            selectedImageEl.previousElementSibling.classList.remove('d-none');
+            selectedImageEl.classList.add('d-none');
+            selectedImageEl.src = `${imageUrl}?v=${new Date().toJSON()}`;
+        }
+        onChange(image) {
+            // leave it empty
+        }
     }
 }
 if (!window.customElements.get('simple-image-gallery')) {
-    window.SimpleImageGallery = SimpleImageGallery;
-    window.customElements.define('simple-image-gallery', SimpleImageGallery);
+    window.customElements.define('simple-image-gallery', window.SimpleImageGallery);
 }
